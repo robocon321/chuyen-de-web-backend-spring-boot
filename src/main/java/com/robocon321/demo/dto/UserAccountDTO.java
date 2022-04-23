@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ResponseObject<T> {
-	private T data = null;
-	private String message = "";
-	private boolean isSuccess = false;
+@NoArgsConstructor
+public class UserAccountDTO {
+	private Long id;
+	private String uname;
+	private UserDTO user;
 }
