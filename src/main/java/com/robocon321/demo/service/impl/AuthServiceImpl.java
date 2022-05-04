@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
 		
 		user.setRoles(List.of(roleEntity));
 		user = userRepository.save(user);
-		if(user.getId() == 0) throw new RuntimeException("Cannot save user_role");
+		if(user.getId() == 0) throw new RuntimeException("Cannot save User role");
 		
 		return mapper.map(user, UserDTO.class);
 	}

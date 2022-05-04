@@ -34,7 +34,7 @@ public class Attribute {
 	private String name;
 	
 	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name = "product_id", nullable = false)
+	@JoinColumn(name = "product_id")
 	private Product product;
 		
 	@ManyToOne(targetEntity = User.class)

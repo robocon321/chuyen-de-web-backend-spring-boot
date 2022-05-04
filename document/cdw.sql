@@ -1,3 +1,6 @@
+CREATE DATABASE alula;
+USE alula;
+
 CREATE TABLE IF NOT EXISTS `role` (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(10) NOT NULL
@@ -129,7 +132,7 @@ ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id);
 
 CREATE TABLE IF NOT EXISTS product (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	product_id INT NOT NULL UNIQUE,
+	post_id INT NOT NULL UNIQUE,
  	min_price DOUBLE NOT NULL,
     max_price DOUBLE NOT NULL,
     stock_quantity INT DEFAULT 0,
@@ -142,7 +145,7 @@ CREATE TABLE IF NOT EXISTS product (
 );
 
 ALTER TABLE `product`
-ADD FOREIGN KEY (product_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
 
 CREATE TABLE IF NOT EXISTS link_post (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -159,7 +162,7 @@ ADD FOREIGN KEY (post2_id) REFERENCES `post`(id);
 CREATE TABLE IF NOT EXISTS attribute (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
-    product_id INT NOT NULL,
+    product_id INT,
     mod_user_id INT NOT NULL,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -311,6 +314,14 @@ insert into user (fullname, email, phone, avatar, status, mod_user_id, mod_time)
 
 
 
+
+insert into `role` (name) values ('ROOT');
+insert into `role` (name) values ('ADMIN');
+insert into `role` (name) values ('CLIENT');
+
+
+
+
 insert into user_role (id, role_id, user_id) values (1, 2, 1);
 insert into user_role (id, role_id, user_id) values (2, 1, 2);
 insert into user_role (id, role_id, user_id) values (3, 3, 3);
@@ -366,7 +377,7 @@ INSERT INTO `taxomony` (`id`, `name`, `description`, `slug`, `type`, `parent_id`
 (5, 'Construction Clean and Final Clean', 'quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel', 'construction-clean-and-final-clean', 'product-attribute', NULL, 1, 15, '2022-01-01 00:00:00'),
 (6, 'Asphalt Paving', 'vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae duis faucibus accumsan odio curabitur', 'asphalt-paving', 'blog-tag', NULL, 1, 3, '2021-12-11 00:00:00'),
 (7, 'Painting & Vinyl Wall Covering', 'erat quisque erat eros viverra eget congue eget semper rutrum nulla', 'painting-vinyl-wall-covering', 'blog-category', NULL, 1, 9, '2021-08-26 00:00:00'),
-(8, 'Drywall & Acoustical (FED)', 'amet diam in magna bibendum imperdiet nullam orci pede venenatis non sodales sed tincidunt', 'drywall-acoustical-fed', 'blog-tag', NULL, 1, 21, '2021-06-28 00:00:00'),
+(8, 'Drywall & Acoustical (FED)', 'amet diam in magna bibendum imperdiet nullam orci pede venenatis non sodales sed tincidunt', 'drywall-acoustical-fed', 'blog-tag', NULL, 1, 20, '2021-06-28 00:00:00'),
 (9, 'Structural & Misc Steel Erection', 'nisl aenean lectus pellentesque eget nunc donec quis orci eget orci vehicula condimentum curabitur in libero', 'structural-misc-steel-erection', 'product-tag', NULL, 1, 19, '2022-03-30 00:00:00'),
 (10, 'Doors, Frames & Hardware', 'risus praesent lectus vestibulum quam sapien varius ut blandit non interdum in ante vestibulum', 'doors-frames-hardware', 'product-category', NULL, 1, 13, '2021-12-18 00:00:00'),
 (11, 'Marlite Panels (FED)', 'turpis adipiscing lorem vitae mattis nibh ligula nec sem duis', 'marlite-panels-fed', 'blog-tag', NULL, 1, 1, '2022-02-16 00:00:00'),
@@ -387,7 +398,7 @@ INSERT INTO `taxomony` (`id`, `name`, `description`, `slug`, `type`, `parent_id`
 (26, 'Granite Surfaces', 'eu orci mauris lacinia sapien quis libero nullam sit amet turpis elementum ligula vehicula consequat morbi a', 'granite-surfaces', 'product-attribute', NULL, 1, 4, '2021-07-20 00:00:00'),
 (27, 'EIFS', 'morbi non quam nec dui luctus rutrum nulla tellus in sagittis dui vel nisl duis ac nibh fusce', 'eifs', 'blog-category', NULL, 1, 18, '2022-01-13 00:00:00'),
 (28, 'Overhead Doors', 'odio cras mi pede malesuada in imperdiet et commodo vulputate', 'overhead-doors', 'blog-tag', NULL, 1, 9, '2021-05-12 00:00:00'),
-(29, 'Casework', 'dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum mauris ullamcorper purus sit amet', 'casework', 'product-tag', NULL, 1, 21, '2021-10-05 00:00:00'),
+(29, 'Casework', 'dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum mauris ullamcorper purus sit amet', 'casework', 'product-tag', NULL, 1, 14, '2021-10-05 00:00:00'),
 (30, 'Electrical', 'luctus et ultrices posuere cubilia curae donec pharetra magna vestibulum aliquet ultrices erat tortor sollicitudin mi sit amet', 'electrical', 'blog-category', NULL, 1, 4, '2022-02-14 00:00:00'),
 (31, 'Painting & Vinyl Wall Covering', 'nibh in hac habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget rutrum', 'painting-vinyl-wall-covering', 'product-category', NULL, 1, 8, '2021-12-19 00:00:00'),
 (32, 'Elevator', 'nec nisi volutpat eleifend donec ut dolor morbi vel lectus in quam fringilla rhoncus mauris enim leo rhoncus sed vestibulum', 'elevator', 'product-tag', NULL, 1, 20, '2022-01-31 00:00:00'),

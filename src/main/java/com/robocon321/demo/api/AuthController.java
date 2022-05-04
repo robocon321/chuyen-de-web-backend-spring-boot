@@ -105,7 +105,7 @@ public class AuthController {
 		} else {
 			response.setData(accountRegisterDomain);
 	    	response.setSuccess(true);
-	    	return ResponseEntity.ok().body(response);			
+	    	return ResponseEntity.ok().body(response);
 		}
     }
 }
