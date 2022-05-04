@@ -7,15 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.robocon321.demo.entity.UserAccountEntity;
+import com.robocon321.demo.entity.user.UserAccount;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails {
-	UserAccountEntity userAccount;
+public class CustomUserDetailsDomain implements UserDetails {
+	UserAccount userAccount;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

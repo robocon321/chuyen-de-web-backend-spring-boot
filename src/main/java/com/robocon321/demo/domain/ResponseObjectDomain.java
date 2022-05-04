@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseObject<T> {
+public class ResponseObjectDomain<T> {
 	private T data = null;
 	private String message = "";
 	private boolean isSuccess = false;

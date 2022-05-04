@@ -1,4 +1,4 @@
-package com.robocon321.demo.dto;
+package com.robocon321.demo.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAccountDTO {
-	private Long id;
+	private int id;
 	private String uname;
 	private UserDTO user;
 }

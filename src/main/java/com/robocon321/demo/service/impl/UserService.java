@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.robocon321.demo.domain.CustomUserDetails;
-import com.robocon321.demo.entity.UserAccountEntity;
+import com.robocon321.demo.domain.CustomUserDetailsDomain;
+import com.robocon321.demo.entity.user.UserAccount;
 import com.robocon321.demo.repository.UserAccountRepository;
 
 @Service
@@ -17,19 +17,19 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserAccountEntity user = userAccountRepository.findByUname(username);
+		UserAccount user = userAccountRepository.findByUname(username);
 		if (user == null) {
 			throw new UsernameNotFoundException(username);
 		}
-		return new CustomUserDetails(user);
+		return new CustomUserDetailsDomain(user);
 	}
 
 	public UserDetails loadUserById(int userId) {
-		UserAccountEntity user = userAccountRepository.findByUser_id(userId);
+		UserAccount user = userAccountRepository.findByUser_id(userId);
 		if (user == null) {
 			throw new UsernameNotFoundException(userId+"");
 		}
-		return new CustomUserDetails(user);
+		return new CustomUserDetailsDomain(user);
 	}
 
 }

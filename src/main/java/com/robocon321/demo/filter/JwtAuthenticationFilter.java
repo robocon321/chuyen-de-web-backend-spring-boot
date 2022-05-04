@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.robocon321.demo.service.impl.UserService;
 import com.robocon321.demo.token.JwtTokenProvider;
 
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -49,9 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+            } else {
+                SecurityContextHolder.clearContext();;
             }
         } catch (Exception ex) {
-            log.error("failed on set user authentication", ex);
+        	SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

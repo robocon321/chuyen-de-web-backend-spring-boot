@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robocon321.demo.domain.ResponseObject;
-import com.robocon321.demo.dto.UserAccountDTO;
-import com.robocon321.demo.dto.UserDTO;
+import com.robocon321.demo.domain.ResponseObjectDomain;
+import com.robocon321.demo.dto.user.UserAccountDTO;
+import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.service.HomeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,21 +35,20 @@ public class HomeController {
 	private HomeService homeService;
 	
 	@GetMapping("/users")
-	public ResponseEntity<ResponseObject<List<UserDTO>>> getAllUser() {
-		ResponseObject<List<UserDTO>> response = new ResponseObject<List<UserDTO>>(homeService.getAllUsers(), null, false);
+	public ResponseEntity<ResponseObjectDomain<List<UserDTO>>> getAllUser() {
+		ResponseObjectDomain<List<UserDTO>> response = new ResponseObjectDomain<List<UserDTO>>(homeService.getAllUsers(), null, false);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@GetMapping("/users/{id}")
-	public ResponseEntity<ResponseObject<UserAccountDTO>> getUserAccount(@PathVariable int id) {
-		ResponseObject<UserAccountDTO> response = new ResponseObject<UserAccountDTO>(homeService.getUserAccount(id), null, false);
+	public ResponseEntity<ResponseObjectDomain<UserAccountDTO>> getUserAccount(@PathVariable int id) {
+		ResponseObjectDomain<UserAccountDTO> response = new ResponseObjectDomain<UserAccountDTO>(homeService.getUserAccount(id), null, false);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
 	@PostMapping("/abc")
-	public ResponseEntity<ResponseObject<List<UserDTO>>> post() {
-		log.error("Hello world");
-		ResponseObject<List<UserDTO>> response = new ResponseObject<List<UserDTO>>(homeService.getAllUsers(), null, false);
+	public ResponseEntity<ResponseObjectDomain<List<UserDTO>>> post() {
+		ResponseObjectDomain<List<UserDTO>> response = new ResponseObjectDomain<List<UserDTO>>(homeService.getAllUsers(), null, false);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

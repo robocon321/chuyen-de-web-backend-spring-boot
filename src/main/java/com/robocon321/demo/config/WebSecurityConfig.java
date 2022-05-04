@@ -1,5 +1,7 @@
 package com.robocon321.demo.config;
 
+import java.util.List;
+
 import javax.servlet.http.HttpFilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import com.robocon321.demo.filter.JwtAuthenticationFilter;
 import com.robocon321.demo.service.impl.UserService;
@@ -24,7 +27,7 @@ import com.robocon321.demo.service.impl.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserService userService;
-
+	
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
@@ -61,6 +64,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable();
+		CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        config.addAllowedMethod("*");
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
+        http.authorizeRequests().antMatchers("/**").permitAll().anyRequest()
+        .authenticated().and().csrf().disable().cors().configurationSource(request -> config);
+        
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }

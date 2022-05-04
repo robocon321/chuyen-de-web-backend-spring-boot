@@ -1,5 +1,6 @@
-package com.robocon321.demo.entity;
+package com.robocon321.demo.entity.user;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.robocon321.demo.dto.UserDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.dto.user.UserDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Table(name = "user_account")
-public class UserAccountEntity {
+public class UserAccount {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -35,7 +37,7 @@ public class UserAccountEntity {
 			nullable = false)
 	private String pwd;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
-	private UserEntity user;
+	private User user;
 }

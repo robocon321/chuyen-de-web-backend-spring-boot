@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 	fullname VARCHAR(100),
     email VARCHAR(50),
     phone VARCHAR(15),
-    avatar VARCHAR(200),
+    avatar VARCHAR(2000),
     `status` INT DEFAULT 1,
     mod_user_id INT,
     mod_time DATETIME
@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS post (
     content TEXT NOT NULL,
     `description` VARCHAR(500) NOT NULL,
     `view` INT DEFAULT 0 NOT NULL,
-    thumbnail VARCHAR(250) NOT NULL,
+    thumbnail VARCHAR(2000) NOT NULL,
     gallery_image TEXT,
     `type` VARCHAR(50) NOT NULL,
     parent_id INT,
-    slug VARCHAR(100),
+    slug VARCHAR(2000) NOT NULL,
     meta_title VARCHAR(100),
     meta_description VARCHAR(500),
     comment_status INT DEFAULT 1,
@@ -90,7 +90,7 @@ ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
 CREATE TABLE IF NOT EXISTS taxomony (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
-    slug VARCHAR(100),
+    slug VARCHAR(2000) NOT NULL,
     `type` VARCHAR(50) NOT NULL,
     parent_id INT,
     `description` VARCHAR(250),
@@ -205,7 +205,7 @@ ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
 ALTER TABLE `cart_item`
 ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
 
-CREATE TABLE IF NOT EXISTS `address` (
+CREATE TABLE IF NOT EXISTS contact (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	fullname VARCHAR(100) NOT NULL,
     phone VARCHAR(15) NOT NULL,
@@ -213,19 +213,19 @@ CREATE TABLE IF NOT EXISTS `address` (
     district INT NOT NULL,
     ward INT NOT NULL,
     detail_address TEXT NOT NULL,
-    is_default BIT DEFAULT FALSE,
+    `priority` INT DEFAULT 0,
     `status` INT NOT NULL DEFAULT 1,
     mod_user_id INT NOT NULL,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE `address`
+ALTER TABLE contact
 ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
 
 CREATE TABLE IF NOT EXISTS payment_method (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	`name` VARCHAR(50) NOT NULL,
-    `image` VARCHAR(250) NOT NULL,
+    `image` VARCHAR(2000) NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
     mod_user_id INT NOT NULL,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS checkout (
     cart_id INT NOT NULL,
     shipping_price DOUBLE NOT NULL,
     cart_price DOUBLE NOT NULL,
-    address_id INT NOT NULL,
+    contact_id INT NOT NULL,
     paymethod_id INT NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
     mod_user_id INT NOT NULL,
@@ -253,7 +253,7 @@ ALTER TABLE `checkout`
 ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (address_id) REFERENCES `address`(id);
+ADD FOREIGN KEY (contact_id) REFERENCES contact(id);
 
 ALTER TABLE `checkout`
 ADD FOREIGN KEY (paymethod_id) REFERENCES `payment_method`(id);
@@ -1814,57 +1814,56 @@ insert into cart_item (product_id, quantity, cart_id) values (88, 2, 10);
 insert into cart_item (product_id, quantity, cart_id) values (66, 3, 62);
 
 
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (1, 'Gertrude Selborne', '344-175-8234', 71, 90, 35, '407 Summit Crossing', false, 1, 18, '2021-05-17');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (2, 'Katharyn Millard', '301-508-5101', 42, 65, 31, '1 Badeau Parkway', false, 1, 3, '2022-03-04');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (3, 'Nadiya Lamshead', '809-789-5066', 10, 10, 83, '63848 Corben Hill', false, 1, 6, '2021-07-06');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (4, 'Noelle Frise', '493-799-0997', 10, 10, 89, '10233 Northwestern Terrace', false, 1, 12, '2021-04-29');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (5, 'Helli Lassells', '734-639-2628', 54, 57, 10, '44487 Debra Road', false, 1, 15, '2021-05-12');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (6, 'Alanna Ianetti', '186-516-7369', 37, 72, 33, '8247 Atwood Circle', false, 1, 15, '2022-01-13');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (7, 'Teddy Bahike', '951-257-0269', 55, 50, 33, '26 Daystar Point', false, 1, 20, '2021-06-23');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (8, 'Bern De Atta', '612-805-1854', 73, 22, 77, '5 Scoville Lane', false, 1, 15, '2021-10-02');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (9, 'Malissia Mountford', '627-231-1264', 58, 2, 60, '9962 Green Ridge Place', false, 1, 9, '2021-06-13');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (10, 'Sela Gascoine', '291-691-3778', 72, 96, 40, '91115 Novick Street', false, 1, 10, '2021-05-16');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (11, 'Sabine Checcucci', '284-881-9614', 57, 56, 30, '82 Luster Center', false, 1, 6, '2021-07-10');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (12, 'Leanora Roseaman', '718-180-2742', 93, 51, 30, '0403 Arizona Junction', false, 1, 5, '2021-05-29');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (13, 'Jamie Edmons', '516-841-2469', 56, 66, 13, '23096 Gateway Lane', false, 1, 12, '2021-06-30');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (14, 'Zelig Wurst', '177-660-9093', 50, 6, 58, '82 Jana Lane', false, 1, 11, '2021-09-20');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (15, 'Cris Mogg', '940-552-7607', 53, 25, 92, '1456 Melby Terrace', false, 1, 8, '2022-02-14');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (16, 'Fayina Halleybone', '903-772-7770', 37, 100, 46, '77 Heath Lane', false, 1, 19, '2021-09-07');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (17, 'Chane Huxley', '232-709-3193', 57, 41, 94, '55 School Way', false, 1, 1, '2021-08-02');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (18, 'Edlin Belcher', '262-975-8439', 14, 15, 88, '69323 Farmco Circle', false, 1, 14, '2021-12-01');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (19, 'Drud Aldred', '847-701-7880', 55, 59, 28, '620 Hovde Circle', false, 1, 17, '2021-06-22');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (20, 'Anya Beedie', '963-545-9920', 4, 89, 68, '963 Buell Point', false, 1, 10, '2021-09-06');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (21, 'Margaretta Handscomb', '395-201-1912', 92, 60, 15, '2525 Farragut Avenue', false, 1, 17, '2021-05-30');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (22, 'Zedekiah Sheahan', '707-669-1950', 69, 4, 9, '570 Talmadge Circle', false, 1, 15, '2022-02-03');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (23, 'Ingelbert Jelley', '134-818-0929', 53, 84, 38, '342 Kim Pass', false, 1, 16, '2021-08-07');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (24, 'Juliann Bounds', '107-725-7863', 48, 42, 46, '94970 Roxbury Park', false, 1, 9, '2022-03-15');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (25, 'Cesare Farrier', '616-866-5007', 78, 41, 78, '06 Amoth Plaza', false, 1, 2, '2022-01-23');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (26, 'Henry Runnalls', '913-473-5041', 31, 1, 9, '5429 Clove Park', false, 1, 14, '2022-03-05');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (27, 'Rudolfo Stolle', '695-176-2964', 34, 90, 55, '51 Steensland Trail', false, 1, 3, '2022-01-23');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (28, 'Cara Cota', '193-306-8222', 33, 13, 94, '6870 Lukken Avenue', false, 1, 13, '2022-03-22');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (29, 'Harry Rebert', '741-804-1794', 67, 58, 11, '54864 Namekagon Crossing', false, 1, 15, '2021-10-28');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (30, 'Barrie Ripper', '700-818-3773', 29, 90, 18, '969 Knutson Place', false, 1, 17, '2022-01-01');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (31, 'Vachel Polkinghorne', '805-372-7177', 80, 57, 62, '3116 Elmside Lane', false, 1, 11, '2021-10-19');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (32, 'Dawna Sawford', '679-494-4901', 75, 4, 67, '52 Dottie Drive', false, 1, 14, '2021-12-11');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (33, 'Claresta Crookshanks', '986-930-6569', 60, 67, 10, '0702 Shelley Avenue', false, 1, 8, '2021-12-01');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (34, 'Cesaro Tilliards', '932-363-9551', 97, 21, 17, '463 Northfield Lane', false, 1, 15, '2022-04-19');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (35, 'Ashia Kiraly', '477-549-1690', 99, 64, 11, '714 Eastwood Drive', false, 1, 18, '2021-07-03');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (36, 'Chet Dibling', '282-757-7994', 66, 23, 18, '61 Nova Point', false, 1, 10, '2021-05-24');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (37, 'Gaylor Stouther', '829-888-4800', 39, 24, 77, '16078 South Terrace', false, 1, 20, '2021-05-28');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (38, 'Deina Tams', '960-865-4897', 9, 3, 39, '27 Fisk Parkway', false, 1, 4, '2022-02-12');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (46, 'Meara Panks', '996-423-5456', 29, 3, 68, '789 Killdeer Court', false, 1, 2, '2022-03-29');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (39, 'Guglielma Moggle', '773-271-7658', 54, 32, 38, '59 Vahlen Place', false, 1, 6, '2021-08-27');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (48, 'Cacilie Welland', '940-700-1536', 34, 3, 66, '249 Northwestern Parkway', false, 1, 12, '2021-10-29');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (40, 'Gloria Newcomen', '652-437-8251', 54, 28, 99, '19322 Hintze Court', false, 1, 11, '2022-03-12');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (50, 'Hamilton Blabber', '384-442-2437', 64, 52, 93, '68 Crownhardt Park', false, 1, 7, '2021-06-17');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (41, 'Patrice Fuzzard', '943-630-6153', 9, 41, 52, '5 Crescent Oaks Pass', false, 1, 13, '2021-08-22');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (42, 'Romeo Pairpoint', '802-275-0783', 34, 65, 38, '76029 Magdeline Pass', false, 1, 11, '2022-04-15');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (43, 'Esra Birks', '605-135-8244', 87, 39, 45, '78 Birchwood Pass', false, 1, 2, '2021-10-01');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (44, 'Esme Camerana', '435-479-9491', 72, 56, 86, '896 Westend Way', false, 1, 8, '2021-09-30');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (45, 'Dael Shorie', '200-505-2200', 91, 63, 80, '5476 Marquette Court', false, 1, 12, '2022-01-17');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (47, 'Keri Emmanuel', '824-212-8407', 99, 63, 98, '38992 Meadow Valley Lane', false, 1, 13, '2021-05-24');
-insert into `address` (id, fullname, phone, province, district, ward, detail_address, is_default, status, mod_user_id, mod_time) values (49, 'Brewster Wykey', '782-233-5375', 65, 90, 76, '90 Jay Center', false, 1, 5, '2022-02-11');
-
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (1, 'Gertrude Selborne', '344-175-8234', 71, 90, 35, '407 Summit Crossing', 0, 1, 18, '2021-05-17');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (2, 'Katharyn Millard', '301-508-5101', 42, 65, 31, '1 Badeau Parkway', 0, 1, 3, '2022-03-04');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (3, 'Nadiya Lamshead', '809-789-5066', 10, 10, 83, '63848 Corben Hill', 0, 1, 6, '2021-07-06');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (4, 'Noelle Frise', '493-799-0997', 10, 10, 89, '10233 Northwestern Terrace', 0, 1, 12, '2021-04-29');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (5, 'Helli Lassells', '734-639-2628', 54, 57, 10, '44487 Debra Road', 0, 1, 15, '2021-05-12');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (6, 'Alanna Ianetti', '186-516-7369', 37, 72, 33, '8247 Atwood Circle', 0, 1, 15, '2022-01-13');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (7, 'Teddy Bahike', '951-257-0269', 55, 50, 33, '26 Daystar Point', 0, 1, 20, '2021-06-23');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (8, 'Bern De Atta', '612-805-1854', 73, 22, 77, '5 Scoville Lane', 0, 1, 15, '2021-10-02');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (9, 'Malissia Mountford', '627-231-1264', 58, 2, 60, '9962 Green Ridge Place', 0, 1, 9, '2021-06-13');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (10, 'Sela Gascoine', '291-691-3778', 72, 96, 40, '91115 Novick Street', 0, 1, 10, '2021-05-16');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (11, 'Sabine Checcucci', '284-881-9614', 57, 56, 30, '82 Luster Center', 0, 1, 6, '2021-07-10');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (12, 'Leanora Roseaman', '718-180-2742', 93, 51, 30, '0403 Arizona Junction', 0, 1, 5, '2021-05-29');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (13, 'Jamie Edmons', '516-841-2469', 56, 66, 13, '23096 Gateway Lane', 0, 1, 12, '2021-06-30');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (14, 'Zelig Wurst', '177-660-9093', 50, 6, 58, '82 Jana Lane', 0, 1, 11, '2021-09-20');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (15, 'Cris Mogg', '940-552-7607', 53, 25, 92, '1456 Melby Terrace', 0, 1, 8, '2022-02-14');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (16, 'Fayina Halleybone', '903-772-7770', 37, 100, 46, '77 Heath Lane', 0, 1, 19, '2021-09-07');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (17, 'Chane Huxley', '232-709-3193', 57, 41, 94, '55 School Way', 0, 1, 1, '2021-08-02');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (18, 'Edlin Belcher', '262-975-8439', 14, 15, 88, '69323 Farmco Circle', 0, 1, 14, '2021-12-01');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (19, 'Drud Aldred', '847-701-7880', 55, 59, 28, '620 Hovde Circle', 0, 1, 17, '2021-06-22');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (20, 'Anya Beedie', '963-545-9920', 4, 89, 68, '963 Buell Point', 0, 1, 10, '2021-09-06');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (21, 'Margaretta Handscomb', '395-201-1912', 92, 60, 15, '2525 Farragut Avenue', 0, 1, 17, '2021-05-30');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (22, 'Zedekiah Sheahan', '707-669-1950', 69, 4, 9, '570 Talmadge Circle', 0, 1, 15, '2022-02-03');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (23, 'Ingelbert Jelley', '134-818-0929', 53, 84, 38, '342 Kim Pass', 0, 1, 16, '2021-08-07');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (24, 'Juliann Bounds', '107-725-7863', 48, 42, 46, '94970 Roxbury Park', 0, 1, 9, '2022-03-15');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (25, 'Cesare Farrier', '616-866-5007', 78, 41, 78, '06 Amoth Plaza', 0, 1, 2, '2022-01-23');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (26, 'Henry Runnalls', '913-473-5041', 31, 1, 9, '5429 Clove Park', 0, 1, 14, '2022-03-05');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (27, 'Rudolfo Stolle', '695-176-2964', 34, 90, 55, '51 Steensland Trail', 0, 1, 3, '2022-01-23');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (28, 'Cara Cota', '193-306-8222', 33, 13, 94, '6870 Lukken Avenue', 0, 1, 13, '2022-03-22');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (29, 'Harry Rebert', '741-804-1794', 67, 58, 11, '54864 Namekagon Crossing', 0, 1, 15, '2021-10-28');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (30, 'Barrie Ripper', '700-818-3773', 29, 90, 18, '969 Knutson Place', 0, 1, 17, '2022-01-01');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (31, 'Vachel Polkinghorne', '805-372-7177', 80, 57, 62, '3116 Elmside Lane', 0, 1, 11, '2021-10-19');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (32, 'Dawna Sawford', '679-494-4901', 75, 4, 67, '52 Dottie Drive', 0, 1, 14, '2021-12-11');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (33, 'Claresta Crookshanks', '986-930-6569', 60, 67, 10, '0702 Shelley Avenue', 0, 1, 8, '2021-12-01');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (34, 'Cesaro Tilliards', '932-363-9551', 97, 21, 17, '463 Northfield Lane', 0, 1, 15, '2022-04-19');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (35, 'Ashia Kiraly', '477-549-1690', 99, 64, 11, '714 Eastwood Drive', 0, 1, 18, '2021-07-03');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (36, 'Chet Dibling', '282-757-7994', 66, 23, 18, '61 Nova Point', 0, 1, 10, '2021-05-24');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (37, 'Gaylor Stouther', '829-888-4800', 39, 24, 77, '16078 South Terrace', 0, 1, 20, '2021-05-28');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (38, 'Deina Tams', '960-865-4897', 9, 3, 39, '27 Fisk Parkway', 0, 1, 4, '2022-02-12');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (46, 'Meara Panks', '996-423-5456', 29, 3, 68, '789 Killdeer Court', 0, 1, 2, '2022-03-29');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (39, 'Guglielma Moggle', '773-271-7658', 54, 32, 38, '59 Vahlen Place', 0, 1, 6, '2021-08-27');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (48, 'Cacilie Welland', '940-700-1536', 34, 3, 66, '249 Northwestern Parkway', 0, 1, 12, '2021-10-29');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (40, 'Gloria Newcomen', '652-437-8251', 54, 28, 99, '19322 Hintze Court', 0, 1, 11, '2022-03-12');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (50, 'Hamilton Blabber', '384-442-2437', 64, 52, 93, '68 Crownhardt Park', 0, 1, 7, '2021-06-17');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (41, 'Patrice Fuzzard', '943-630-6153', 9, 41, 52, '5 Crescent Oaks Pass', 0, 1, 13, '2021-08-22');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (42, 'Romeo Pairpoint', '802-275-0783', 34, 65, 38, '76029 Magdeline Pass', 0, 1, 11, '2022-04-15');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (43, 'Esra Birks', '605-135-8244', 87, 39, 45, '78 Birchwood Pass', 0, 1, 2, '2021-10-01');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (44, 'Esme Camerana', '435-479-9491', 72, 56, 86, '896 Westend Way', 0, 1, 8, '2021-09-30');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (45, 'Dael Shorie', '200-505-2200', 91, 63, 80, '5476 Marquette Court', 0, 1, 12, '2022-01-17');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (47, 'Keri Emmanuel', '824-212-8407', 99, 63, 98, '38992 Meadow Valley Lane', 0, 1, 13, '2021-05-24');
+insert into contact (id, fullname, phone, province, district, ward, detail_address, `priority`, status, mod_user_id, mod_time) values (49, 'Brewster Wykey', '782-233-5375', 65, 90, 76, '90 Jay Center', 0, 1, 5, '2022-02-11');
 
 
 
@@ -1877,56 +1876,56 @@ insert into payment_method (name, image, status, mod_user_id, mod_time) values (
 
 
 
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (56, 45000, 859000, 47, 2, 1, 12, '2021-04-27');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (40, 4000, 877000, 21, 2, 1, 6, '2021-05-19');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (8, 24000, 534000, 36, 1, 1, 15, '2021-11-15');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (53, 43000, 687000, 34, 2, 1, 11, '2021-12-22');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (92, 26000, 934000, 11, 2, 1, 9, '2022-04-04');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (8, 45000, 646000, 18, 4, 1, 8, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (61, 27000, 825000, 11, 5, 1, 3, '2022-03-30');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (49, 47000, 934000, 2, 5, 1, 8, '2021-08-14');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (49, 30000, 407000, 24, 4, 1, 18, '2022-02-07');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (83, 27000, 597000, 42, 1, 1, 11, '2021-09-07');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (51, 36000, 450000, 26, 5, 1, 17, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (51, 48000, 606000, 28, 5, 1, 20, '2021-06-11');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (68, 35000, 94000, 18, 2, 1, 13, '2021-11-17');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (13, 50000, 28000, 47, 5, 1, 16, '2021-08-29');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (70, 32000, 11000, 13, 2, 1, 7, '2022-04-01');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (43, 15000, 148000, 24, 4, 1, 20, '2022-02-24');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (47, 25000, 102000, 25, 1, 1, 16, '2022-01-25');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (53, 21000, 250000, 50, 5, 1, 13, '2022-01-12');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (79, 2000, 176000, 36, 5, 1, 18, '2022-03-05');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (45, 50000, 670000, 25, 2, 1, 16, '2021-08-18');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (73, 48000, 654000, 42, 4, 1, 17, '2021-09-14');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (31, 40000, 429000, 22, 2, 1, 9, '2021-12-04');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (27, 2000, 645000, 4, 1, 1, 2, '2021-07-19');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (43, 4000, 909000, 19, 3, 1, 15, '2022-03-14');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (19, 8000, 352000, 2, 1, 1, 2, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (51, 9000, 776000, 25, 4, 1, 3, '2021-12-29');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (53, 26000, 905000, 40, 5, 1, 16, '2022-01-16');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (75, 13000, 972000, 27, 3, 1, 7, '2021-05-26');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (83, 15000, 634000, 22, 2, 1, 8, '2022-01-23');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (3, 38000, 11000, 26, 1, 1, 5, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (84, 34000, 646000, 10, 2, 1, 14, '2022-02-27');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (24, 32000, 740000, 25, 1, 1, 19, '2021-05-24');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (30, 18000, 203000, 32, 4, 1, 19, '2021-08-19');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (4, 13000, 847000, 35, 5, 1, 16, '2021-10-26');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (7, 16000, 509000, 36, 5, 1, 19, '2021-05-06');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (16, 44000, 523000, 29, 2, 1, 12, '2021-07-02');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (31, 13000, 905000, 14, 1, 1, 1, '2021-10-07');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (48, 29000, 836000, 34, 2, 1, 12, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (82, 50000, 32000, 2, 4, 1, 3, '2022-02-02');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (77, 12000, 382000, 14, 4, 1, 3, '2022-01-21');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (31, 4000, 924000, 41, 5, 1, 9, '2022-01-02');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (60, 31000, 948000, 15, 1, 1, 4, '2021-10-04');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (12, 21000, 204000, 19, 5, 1, 1, '2021-08-17');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (100, 32000, 731000, 27, 3, 1, 15, '2022-01-01');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (52, 39000, 680000, 16, 2, 1, 12, '2022-03-06');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (19, 14000, 368000, 21, 5, 1, 20, '2022-02-16');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (85, 13000, 389000, 20, 4, 1, 16, '2021-09-22');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (76, 45000, 890000, 7, 5, 1, 11, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (4, 20000, 334000, 2, 3, 1, 17, '2021-12-18');
-insert into checkout (cart_id, shipping_price, cart_price, address_id, paymethod_id, status, mod_user_id, mod_time) values (74, 20000, 305000, 36, 3, 1, 19, '2021-10-20');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (56, 45000, 859000, 47, 2, 1, 12, '2021-04-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (40, 4000, 877000, 21, 2, 1, 6, '2021-05-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 24000, 534000, 36, 1, 1, 15, '2021-11-15');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 43000, 687000, 34, 2, 1, 11, '2021-12-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (92, 26000, 934000, 11, 2, 1, 9, '2022-04-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 45000, 646000, 18, 4, 1, 8, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (61, 27000, 825000, 11, 5, 1, 3, '2022-03-30');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 47000, 934000, 2, 5, 1, 8, '2021-08-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 30000, 407000, 24, 4, 1, 18, '2022-02-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 27000, 597000, 42, 1, 1, 11, '2021-09-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 36000, 450000, 26, 5, 1, 17, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 48000, 606000, 28, 5, 1, 20, '2021-06-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (68, 35000, 94000, 18, 2, 1, 13, '2021-11-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (13, 50000, 28000, 47, 5, 1, 16, '2021-08-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (70, 32000, 11000, 13, 2, 1, 7, '2022-04-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 15000, 148000, 24, 4, 1, 20, '2022-02-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (47, 25000, 102000, 25, 1, 1, 16, '2022-01-25');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 21000, 250000, 50, 5, 1, 13, '2022-01-12');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (79, 2000, 176000, 36, 5, 1, 18, '2022-03-05');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (45, 50000, 670000, 25, 2, 1, 16, '2021-08-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (73, 48000, 654000, 42, 4, 1, 17, '2021-09-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 40000, 429000, 22, 2, 1, 9, '2021-12-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (27, 2000, 645000, 4, 1, 1, 2, '2021-07-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 4000, 909000, 19, 3, 1, 15, '2022-03-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 8000, 352000, 2, 1, 1, 2, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 9000, 776000, 25, 4, 1, 3, '2021-12-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 26000, 905000, 40, 5, 1, 16, '2022-01-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (75, 13000, 972000, 27, 3, 1, 7, '2021-05-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 15000, 634000, 22, 2, 1, 8, '2022-01-23');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (3, 38000, 11000, 26, 1, 1, 5, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (84, 34000, 646000, 10, 2, 1, 14, '2022-02-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (24, 32000, 740000, 25, 1, 1, 19, '2021-05-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (30, 18000, 203000, 32, 4, 1, 19, '2021-08-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 13000, 847000, 35, 5, 1, 16, '2021-10-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (7, 16000, 509000, 36, 5, 1, 19, '2021-05-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (16, 44000, 523000, 29, 2, 1, 12, '2021-07-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 13000, 905000, 14, 1, 1, 1, '2021-10-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (48, 29000, 836000, 34, 2, 1, 12, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (82, 50000, 32000, 2, 4, 1, 3, '2022-02-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (77, 12000, 382000, 14, 4, 1, 3, '2022-01-21');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 4000, 924000, 41, 5, 1, 9, '2022-01-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (60, 31000, 948000, 15, 1, 1, 4, '2021-10-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (12, 21000, 204000, 19, 5, 1, 1, '2021-08-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (100, 32000, 731000, 27, 3, 1, 15, '2022-01-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (52, 39000, 680000, 16, 2, 1, 12, '2022-03-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 14000, 368000, 21, 5, 1, 20, '2022-02-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (85, 13000, 389000, 20, 4, 1, 16, '2021-09-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (76, 45000, 890000, 7, 5, 1, 11, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 20000, 334000, 2, 3, 1, 17, '2021-12-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (74, 20000, 305000, 36, 3, 1, 19, '2021-10-20');
 
 
 

@@ -6,8 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
-import com.robocon321.demo.domain.CustomUserDetails;
-import com.robocon321.demo.dto.UserAccountDTO;
+import com.robocon321.demo.domain.CustomUserDetailsDomain;
+import com.robocon321.demo.dto.user.UserAccountDTO;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,21 +29,22 @@ public class JwtTokenProvider {
     private final long JWT_EXPIRATION = 604800000L;
 
     // Tạo ra jwt từ thông tin user
-    public String generateToken(CustomUserDetails userDetails) {
+    public String generateToken(CustomUserDetailsDomain userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         // Tạo chuỗi json web token từ id của user.
         return Jwts.builder()
-                   .setIssuedAt(now)
-                   .setExpiration(expiryDate)
-                   .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
-                   .claim("account", mapper.map(userDetails.getUserAccount(), UserAccountDTO.class))
-                   .compact();
+        			.setSubject(userDetails.getUserAccount().getId() + "")
+        			.setIssuedAt(now)
+        			.setExpiration(expiryDate)
+        			.signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+        			.claim("account", mapper.map(userDetails.getUserAccount(), UserAccountDTO.class))
+        			.compact();
     }
 
     // Lấy thông tin user từ jwt
     public int getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parser()        					
                             .setSigningKey(JWT_SECRET)
                             .parseClaimsJws(token)
                             .getBody();
