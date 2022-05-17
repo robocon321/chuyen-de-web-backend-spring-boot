@@ -30,24 +30,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Comment {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	private String content;
 
 	@ManyToOne(targetEntity = Comment.class)
 	@JoinColumn(name = "parent_id")
+	@JsonIgnore
 	private Comment parentComment;
 
 	@ManyToOne(targetEntity = Post.class)
 	@JoinColumn(name = "post_id", nullable = false)
+	@JsonIgnore
 	private Post post;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
@@ -56,5 +59,6 @@ public class Comment {
 	private Date modifiedTime;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentComment")
+	@JsonIgnore
 	private List<Comment> comments;
 }

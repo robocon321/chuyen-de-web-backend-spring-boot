@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 public class VoteDTO {
 	private Integer id;
 	private PostDTO post;
-	private int star;
+	private Integer star;
 	private String content;
-	private int status;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;	
 }

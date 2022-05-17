@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
 
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Contact {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(nullable = false)
@@ -36,25 +37,26 @@ public class Contact {
 	private String phone;
 	
 	@Column(nullable = false)
-	private int province;
+	private Integer province;
 	
 	@Column(nullable = false)
-	private int district;
+	private Integer district;
 	
 	@Column(nullable = false)
-	private int ward;
+	private Integer ward;
 	
 	@Column(nullable = false)
 	private String detailAddress;
 
-	@Column(nullable = false)
-	private int priority;
+	@Column(nullable = false, columnDefinition = "DEFAULT 0")
+	private Integer priority;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 

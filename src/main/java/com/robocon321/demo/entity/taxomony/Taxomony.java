@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Taxomony {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(nullable = false)
@@ -46,13 +46,15 @@ public class Taxomony {
 
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = Taxomony.class)
 	@JoinColumn(name = "parent_id")
+	@JsonIgnore
 	private Taxomony parentTaxomony;
 	
 	@Column(columnDefinition = "DEFAULT 1")
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
@@ -61,5 +63,6 @@ public class Taxomony {
 	private Date modifiedTime;
 	
 	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<TaxomonyMeta> metas;
 }

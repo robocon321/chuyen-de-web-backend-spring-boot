@@ -20,7 +20,7 @@ public class PostDTO {
 	private String title;
 	private String content;
 	private String description;
-	private int view;
+	private Integer view;
 	private String thumbnail;
 	private String galleryImage;
 	private String type;
@@ -28,9 +28,9 @@ public class PostDTO {
 	private String slug;	
 	private String metaTitle;	
 	private String metaDescription;
-	private int commentStatus;
-	private int commentCount;
-	private int status;
+	private Integer commentStatus;
+	private Integer commentCount;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 	private List<PostDTO> posts;

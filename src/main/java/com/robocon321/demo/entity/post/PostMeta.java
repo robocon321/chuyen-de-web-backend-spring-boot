@@ -2,12 +2,14 @@ package com.robocon321.demo.entity.post;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.robocon321.demo.entity.taxomony.Taxomony;
-import com.robocon321.demo.entity.taxomony.TaxomonyMeta;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,12 +21,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostMeta {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String key;
 	private String value;
 	
 	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Post.class)
 	@JoinColumn(name = "post_id")
+	@JsonIgnore
 	private Post post;
 
 }

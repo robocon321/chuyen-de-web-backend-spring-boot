@@ -19,7 +19,7 @@ public class TaxomonyDTO {
 	private String type;
 	private String description;
 	private TaxomonyDTO parentTaxomony;
-	private int status;
+	private Integer status;
 	private User modifiedUser;
 	private Date modifiedTime;
 	private List<TaxomonyMetaDTO> metas;

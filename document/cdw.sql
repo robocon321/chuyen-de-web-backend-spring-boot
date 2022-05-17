@@ -34,8 +34,8 @@ ADD FOREIGN KEY (user_id) REFERENCES user(id);
 
 CREATE TABLE IF NOT EXISTS user_account (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    uname VARCHAR(50) NOT NULL,
-    pwd VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    `password` VARCHAR(50) NOT NULL,
     user_id INT NOT NULL
 );
 
@@ -44,12 +44,13 @@ ADD FOREIGN KEY (user_id) REFERENCES user(id);
 
 CREATE TABLE IF NOT EXISTS user_social (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-    social_key VARCHAR(50) NOT NULL,
-    social_type CHAR(10) NOT NULL,
+    `key` VARCHAR(50) NOT NULL,
+    type INT NOT NULL,
+    uid VARCHAR(50) NOT NULL,
     user_id INT NOT NULL
 );
 
-ALTER TABLE `user_account`
+ALTER TABLE `user_social`
 ADD FOREIGN KEY (user_id) REFERENCES user(id);
 
 
@@ -345,26 +346,26 @@ insert into user_role (id, role_id, user_id) values (20, 3, 20);
 
 
 
-insert into user_account (uname, pwd, user_id) values ('glippatt0', 'lGCKKLsbh', 1);
-insert into user_account (uname, pwd, user_id) values ('ztortoishell1', 'cWlKfAhFFt', 2);
-insert into user_account (uname, pwd, user_id) values ('tnulty2', 'TMuGYgiWTgxJ', 3);
-insert into user_account (uname, pwd, user_id) values ('wcarrivick3', 'o7pgQHmeqq', 4);
-insert into user_account (uname, pwd, user_id) values ('omoden4', 'Qa0wwo2F', 5);
-insert into user_account (uname, pwd, user_id) values ('gjanas5', 'tkHBYs6', 6);
-insert into user_account (uname, pwd, user_id) values ('dathowe6', 'xOoFj7t', 7);
-insert into user_account (uname, pwd, user_id) values ('tschuster7', 'vr7akH8E6Hk', 8);
-insert into user_account (uname, pwd, user_id) values ('fbicheno8', 'aOPxpUv', 9);
-insert into user_account (uname, pwd, user_id) values ('ejest9', 'DglQW8c', 10);
-insert into user_account (uname, pwd, user_id) values ('mreamea', 'UV54ReOH', 11);
-insert into user_account (uname, pwd, user_id) values ('dmacclanceyb', 'Ox6fLBhi0', 12);
-insert into user_account (uname, pwd, user_id) values ('wginnellyc', 'D0DPHcPrJjWx', 13);
-insert into user_account (uname, pwd, user_id) values ('calabasterd', 'oOJWUCZju6', 14);
-insert into user_account (uname, pwd, user_id) values ('ttoffaninie', 'VCGp3UqM6V', 15);
-insert into user_account (uname, pwd, user_id) values ('stomainif', 'Db1houKMdNHt', 16);
-insert into user_account (uname, pwd, user_id) values ('wcottesfordg', 'nSNesf3sT3', 17);
-insert into user_account (uname, pwd, user_id) values ('pgerwoodh', 't5tiw6SvH7xM', 18);
-insert into user_account (uname, pwd, user_id) values ('rreallyi', 'MA1yYzh1JTx9', 19);
-insert into user_account (uname, pwd, user_id) values ('scouronnej', 'M9OmrShVR', 20);
+insert into user_account (username, `password`, user_id) values ('glippatt0', 'lGCKKLsbh', 1);
+insert into user_account (username, `password`, user_id) values ('ztortoishell1', 'cWlKfAhFFt', 2);
+insert into user_account (username, `password`, user_id) values ('tnulty2', 'TMuGYgiWTgxJ', 3);
+insert into user_account (username, `password`, user_id) values ('wcarrivick3', 'o7pgQHmeqq', 4);
+insert into user_account (username, `password`, user_id) values ('omoden4', 'Qa0wwo2F', 5);
+insert into user_account (username, `password`, user_id) values ('gjanas5', 'tkHBYs6', 6);
+insert into user_account (username, `password`, user_id) values ('dathowe6', 'xOoFj7t', 7);
+insert into user_account (username, `password`, user_id) values ('tschuster7', 'vr7akH8E6Hk', 8);
+insert into user_account (username, `password`, user_id) values ('fbicheno8', 'aOPxpUv', 9);
+insert into user_account (username, `password`, user_id) values ('ejest9', 'DglQW8c', 10);
+insert into user_account (username, `password`, user_id) values ('mreamea', 'UV54ReOH', 11);
+insert into user_account (username, `password`, user_id) values ('dmacclanceyb', 'Ox6fLBhi0', 12);
+insert into user_account (username, `password`, user_id) values ('wginnellyc', 'D0DPHcPrJjWx', 13);
+insert into user_account (username, `password`, user_id) values ('calabasterd', 'oOJWUCZju6', 14);
+insert into user_account (username, `password`, user_id) values ('ttoffaninie', 'VCGp3UqM6V', 15);
+insert into user_account (username, `password`, user_id) values ('stomainif', 'Db1houKMdNHt', 16);
+insert into user_account (username, `password`, user_id) values ('wcottesfordg', 'nSNesf3sT3', 17);
+insert into user_account (username, `password`, user_id) values ('pgerwoodh', 't5tiw6SvH7xM', 18);
+insert into user_account (username, `password`, user_id) values ('rreallyi', 'MA1yYzh1JTx9', 19);
+insert into user_account (username, `password`, user_id) values ('scouronnej', 'M9OmrShVR', 20);
 
 
 
