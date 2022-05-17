@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentMethod {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(nullable = false)
@@ -36,10 +37,11 @@ public class PaymentMethod {
 	private String image;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 

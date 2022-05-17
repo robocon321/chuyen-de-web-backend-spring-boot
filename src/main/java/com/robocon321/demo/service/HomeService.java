@@ -9,6 +9,4 @@ import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.repository.UserRepository;
 
 public interface HomeService {
-	public List<UserDTO> getAllUsers();
-	public UserAccountDTO getUserAccount(int id);
 }

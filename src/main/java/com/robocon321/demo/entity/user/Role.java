@@ -21,13 +21,14 @@ import lombok.Data;
 @Data
 public class Role {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")	
-	private int id;
+	private Integer id;
 
 	@Column(nullable = false, unique = true, name = "name")
 	private String name;
 	
-	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<User> users;
 }

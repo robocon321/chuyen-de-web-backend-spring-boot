@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.entity.taxomony.TaxomonyMeta;
@@ -25,40 +26,41 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Product {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@OneToOne(cascade = CascadeType.ALL, targetEntity = Post.class)
 	@JoinColumn(name = "post_id", nullable = false)
+	@JsonIgnore
 	private Post post;
 	
 	@Column(name = "min_price", nullable = false)
-	private double minPrice;
+	private Double minPrice;
 
 	@Column(name = "max_price", nullable = false)
-	private double maxPrice;
+	private Double maxPrice;
 	
 	@Column(name = "stock_quantity", 
 			columnDefinition = "DEFAULT 0", 
 			nullable = false)
-	private int stockQuantity;
+	private Integer stockQuantity;
 
 	@Column(name = "count_rating", 
 			columnDefinition = "DEFAULT 0", 
 			nullable = false)
-	private int countRating;
+	private Integer countRating;
 
 	@Column(name = "total_sales", 
 			columnDefinition = "DEFAULT 0", 
 			nullable = false)
-	private int totalSales;
+	private Integer totalSales;
 	
 	@Column(columnDefinition = "DEFAULT 0", nullable = false)
-	private double weight;
+	private Double weight;
 
 	@Column(columnDefinition = "DEFAULT 0", nullable = false)
-	private double width;
+	private Double width;
 	
 	@Column(columnDefinition = "DEFAULT 0", nullable = false)
-	private double height;
+	private Double height;
 }

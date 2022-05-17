@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -27,14 +28,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Cart {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(nullable = false)
-	private int status;
+	private Integer status;
 	
 	@ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
@@ -43,5 +45,6 @@ public class Cart {
 	private Date modifiedTime;
 	
 	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<CartItem> cartItems;
 }

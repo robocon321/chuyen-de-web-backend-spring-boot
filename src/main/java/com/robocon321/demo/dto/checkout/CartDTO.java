@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartDTO {
 	private Integer id;
-	private int status;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 	private List<CartItemDTO> cartItems;

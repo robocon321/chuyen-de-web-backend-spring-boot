@@ -12,32 +12,35 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.robocon321.demo.dto.user.UserDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
 @Table(name = "user_account")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAccount {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
 	@Column(columnDefinition = "VARCHAR", 
 			length = 50, 
 			nullable = false,
 			unique = true)
-	private String uname;
+	private String username;
 
 	@Column(columnDefinition = "VARCHAR", 
 			length = 50,
 			nullable = false)
-	private String pwd;
+	private String password;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, targetEntity = User.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@JsonIgnore
 	private User user;
+
 }

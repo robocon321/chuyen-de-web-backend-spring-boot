@@ -28,32 +28,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Checkout {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@OneToMany(targetEntity = Cart.class)
+	@ManyToOne(targetEntity = Cart.class)
 	@JoinColumn(name = "cart_id")
+	@JsonIgnore
 	private Cart cart;
 	
 	@Column(name = "shipping_price", nullable = false)
-	private double shippingPrice;
+	private Double shippingPrice;
 	
 	@Column(name = "cart_price", nullable = false)
-	private double cartPrice;
+	private Double cartPrice;
 	
-	@OneToMany(targetEntity = Contact.class)
+	@ManyToOne(targetEntity = Contact.class)
 	@JoinColumn(name = "contact_id")	
+	@JsonIgnore
 	private Contact contact;
 	
-	@OneToMany(targetEntity = PaymentMethod.class)
-	@JoinColumn(name = "cart_id")
+	@ManyToOne(targetEntity = PaymentMethod.class)
+	@JoinColumn(name = "paymethod_id")
+	@JsonIgnore
 	private PaymentMethod paymentMethod;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 

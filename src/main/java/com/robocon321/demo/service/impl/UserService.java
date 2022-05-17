@@ -17,19 +17,23 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserAccount user = userAccountRepository.findByUname(username);
-		if (user == null) {
+		UserAccount userAccount = userAccountRepository.findByUsername(username);
+		if (userAccount == null) {
 			throw new UsernameNotFoundException(username);
 		}
-		return new CustomUserDetailsDomain(user);
+		
+		CustomUserDetailsDomain userDetails = new CustomUserDetailsDomain();
+		userDetails.setUserAccount(userAccount);
+		return userDetails;
 	}
 
 	public UserDetails loadUserById(int userId) {
-		UserAccount user = userAccountRepository.findByUser_id(userId);
-		if (user == null) {
-			throw new UsernameNotFoundException(userId+"");
+		UserAccount userAccount = userAccountRepository.findByUser_id(userId);
+		if (userAccount == null) {
+			throw new UsernameNotFoundException(userId + "");
 		}
-		return new CustomUserDetailsDomain(user);
+		CustomUserDetailsDomain userDetails = new CustomUserDetailsDomain(userAccount);
+		return userDetails;
 	}
 
 }

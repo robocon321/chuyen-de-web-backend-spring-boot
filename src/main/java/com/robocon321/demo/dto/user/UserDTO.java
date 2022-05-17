@@ -16,13 +16,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-	private int id;
+	private Integer id;
 	private String fullname;
 	private String email;
 	private String phone;
 	private String avatar;
-	private int status;
-	private UserDTO modifiedUserRef;
+	private Integer status;
+	private UserDTO modifiedUser;
 	private Date modifiedTime;
 	private List<RoleDTO> roles;
 }

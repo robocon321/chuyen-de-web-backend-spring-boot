@@ -34,9 +34,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private int id;
+	private Integer id;
 	
 	@Column(name = "fullname", 
 			columnDefinition = "VARCHAR", 
@@ -46,6 +46,7 @@ public class User {
 	@Column(name = "email", 
 			columnDefinition = "VARCHAR", 
 			length = 50)
+	@JsonIgnore
 	private String email;
 	
 	@Column(name = "phone",
@@ -60,10 +61,11 @@ public class User {
 	
 	@Column(name = "status",
 			columnDefinition = "INT DEFAULT 1")
-	private int status;
+	private Integer status;
 	
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
@@ -71,7 +73,7 @@ public class User {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "user_role", 
 			joinColumns = @JoinColumn(name = "user_id"),
@@ -84,5 +86,6 @@ public class User {
 	@JoinTable(name = "wishlist",
 				joinColumns = @JoinColumn(name = "user_id"),
 				inverseJoinColumns = @JoinColumn(name = "product_id"))
+	@JsonIgnore
 	private List<Product> wishlist;	
 }

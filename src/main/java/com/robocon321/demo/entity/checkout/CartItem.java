@@ -22,21 +22,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "cart_item")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Product.class)
 	@JoinColumn(name = "product_id", nullable = false)
+	@JsonIgnore
 	private Product product;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")
-	private int quantity;
+	private Integer quantity;
 	
 	@ManyToOne(targetEntity = Cart.class)
 	@JoinColumn(name = "cart_id", nullable = false)

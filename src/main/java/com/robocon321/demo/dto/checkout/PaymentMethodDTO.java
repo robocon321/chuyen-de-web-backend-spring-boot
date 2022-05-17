@@ -27,7 +27,7 @@ public class PaymentMethodDTO {
 	private Integer id;
 	private String name;
 	private String image;
-	private int status;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 }

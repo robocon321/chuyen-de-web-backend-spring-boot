@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 public class CheckoutDTO {
 	private Integer id;
 	private CartDTO cart;
-	private double shippingPrice;
-	private double cartPrice;
+	private Double shippingPrice;
+	private Double cartPrice;
 	private ContactDTO contact;
 	private PaymentMethodDTO paymentMethod;
-	private int status;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 }

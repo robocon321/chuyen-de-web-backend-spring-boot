@@ -18,7 +18,7 @@ public class CommentDTO {
 	private String content;
 	private CommentDTO parentComment;
 	private Post post;
-	private int status;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 	private List<CommentDTO> comments;

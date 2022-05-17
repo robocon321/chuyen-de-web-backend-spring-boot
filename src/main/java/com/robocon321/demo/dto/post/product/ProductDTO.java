@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class ProductDTO {
 	private Integer id;
 	private PostDTO post;
-	private double minPrice;
-	private double maxPrice;
-	private int stockQuantity;
-	private int countRating;
-	private int totalSales;
-	private double weight;
-	private double width;
-	private double height;
+	private Double minPrice;
+	private Double maxPrice;
+	private Integer stockQuantity;
+	private Integer countRating;
+	private Integer totalSales;
+	private Double weight;
+	private Double width;
+	private Double height;
 }

@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.entity.user.User;
 
@@ -31,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Post {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@Column(nullable = false)
@@ -49,7 +50,7 @@ public class Post {
 	@Column(nullable = false, columnDefinition = "DEFAULT ''")
 	private String thumbnail;
 	
-	@Column(name = "gallery_id", 
+	@Column(name = "gallery_image", 
 			nullable = false, 
 			columnDefinition = "DEFAULT '[]'")
 	private String galleryImage;
@@ -71,15 +72,15 @@ public class Post {
 	@Column(name = "comment_status", 
 			nullable = false, 			
 			columnDefinition = "DEFAULT 1")
-	private int commentStatus;
+	private Integer commentStatus;
 	
 	@Column(name = "comment_count", 
 			nullable = false, 			
 			columnDefinition = "DEFAULT 1")
-	private int commentCount;
+	private Integer commentCount;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
@@ -90,12 +91,14 @@ public class Post {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "posts")
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "link_post", 
 				joinColumns = @JoinColumn(nullable = false, name = "post1_id"), 
 				inverseJoinColumns = @JoinColumn(nullable = false, name = "post2_id"))	
+	@JsonIgnore
 	private List<Post> posts;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentComment")
+	@JsonIgnore
 	private List<Comment> comments;
 }

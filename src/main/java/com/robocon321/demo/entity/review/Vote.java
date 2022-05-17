@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.checkout.PaymentMethod;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
@@ -28,23 +29,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Vote {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@OneToMany(targetEntity = Post.class)
+	@ManyToOne(targetEntity = Post.class)
 	@JoinColumn(name = "post_id", nullable = false)
+	@JsonIgnore
 	private Post post;
 	
 	@Column(nullable = false)
-	private int star;
+	private Integer star;
 
 	private String content;
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
-	private int status;
+	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 

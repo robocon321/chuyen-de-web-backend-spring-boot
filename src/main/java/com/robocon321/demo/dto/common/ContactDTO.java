@@ -15,12 +15,12 @@ public class ContactDTO {
 	private Integer id;
 	private String fullname;
 	private String phone;
-	private int province;
-	private int district;
-	private int ward;
+	private Integer province;
+	private Integer district;
+	private Integer ward;
 	private String detailAddress;
-	private int priority;
-	private int status;
+	private Integer priority;
+	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 }
