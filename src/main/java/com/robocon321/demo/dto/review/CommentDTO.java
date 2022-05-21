@@ -1,5 +1,6 @@
 package com.robocon321.demo.dto.review;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,5 +22,5 @@ public class CommentDTO {
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
-	private List<CommentDTO> comments;
+	private List<CommentDTO> comments = new ArrayList<CommentDTO>();
 }

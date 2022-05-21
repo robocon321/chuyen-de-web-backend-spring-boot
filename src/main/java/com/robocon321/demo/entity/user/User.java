@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,13 +13,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.post.product.Product;
+import com.robocon321.demo.entity.review.Comment;
+import com.robocon321.demo.entity.review.Vote;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -88,4 +87,12 @@ public class User {
 				inverseJoinColumns = @JoinColumn(name = "product_id"))
 	@JsonIgnore
 	private List<Product> wishlist;	
+
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modifiedUser")
+//	@JsonIgnore
+//	private List<Vote> votes;
+//
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modifiedUser")
+//	@JsonIgnore
+//	private List<Comment> comments;
 }

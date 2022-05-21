@@ -11,17 +11,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.robocon321.demo.domain.CustomUserDetailsDomain;
+import com.robocon321.demo.dto.user.RoleDTO;
 import com.robocon321.demo.dto.user.UserDTO;
+import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.service.impl.UserService;
 import com.robocon321.demo.token.JwtTokenProvider;
 
-import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -41,9 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 int userId = tokenProvider.getUserIdFromJWT(jwt);
-                UserDetails userDetails = userService.loadUserById(userId);
+                CustomUserDetailsDomain userDetails = userService.loadUserById(userId);
                 UserDTO userDTO = new UserDTO();
-                BeanUtils.copyProperties(((CustomUserDetailsDomain) userDetails).getUser(), userDTO);
+                
+                User user = userDetails.getUser();
+                BeanUtils.copyProperties(user, userDTO);
+                
+				user.getRoles().forEach(role -> {
+					RoleDTO roleDTO = new RoleDTO();
+					BeanUtils.copyProperties(role, roleDTO);
+					userDTO.getRoles().add(roleDTO);
+				});
+                
                 if(userDetails != null) {
                     UsernamePasswordAuthenticationToken
                             authentication = new UsernamePasswordAuthenticationToken(userDTO, null, userDetails.getAuthorities());
@@ -55,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();;
             }
         } catch (Exception ex) {
-        	SecurityContextHolder.clearContext();
+        	ex.printStackTrace();
         }
 
         filterChain.doFilter(request, response);

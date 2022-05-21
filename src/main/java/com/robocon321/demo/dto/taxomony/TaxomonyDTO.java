@@ -1,5 +1,6 @@
 package com.robocon321.demo.dto.taxomony;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,5 +23,5 @@ public class TaxomonyDTO {
 	private Integer status;
 	private User modifiedUser;
 	private Date modifiedTime;
-	private List<TaxomonyMetaDTO> metas;
+	private List<TaxomonyMetaDTO> metas = new ArrayList<>();
 }

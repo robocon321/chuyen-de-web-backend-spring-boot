@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.CustomUserDetailsDomain;
 import com.robocon321.demo.domain.ResponseObjectDomain;
+import com.robocon321.demo.dto.user.RoleDTO;
 import com.robocon321.demo.dto.user.UserAccountDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.dto.user.UserSocialDTO;
@@ -108,7 +109,7 @@ public class AuthController {
 	public ResponseEntity loadUser() {
 		ResponseObjectDomain response = new ResponseObjectDomain<>();
 		try {
-			Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			response.setData(obj);
 			response.setSuccess(true);
 			response.setMessage("Successfull!");
@@ -170,4 +171,6 @@ public class AuthController {
 		}
 		
 	}
+
+	
 }

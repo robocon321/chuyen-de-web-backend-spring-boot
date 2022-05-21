@@ -1,5 +1,6 @@
 package com.robocon321.demo.dto.checkout;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,5 +30,5 @@ public class CartDTO {
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
-	private List<CartItemDTO> cartItems;
+	private List<CartItemDTO> cartItems = new ArrayList<CartItemDTO>();
 }
