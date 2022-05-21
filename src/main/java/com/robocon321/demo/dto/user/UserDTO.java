@@ -1,6 +1,7 @@
 package com.robocon321.demo.dto.user;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -24,5 +25,5 @@ public class UserDTO {
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
-	private List<RoleDTO> roles;
+	private List<RoleDTO> roles = new ArrayList<>();
 }

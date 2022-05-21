@@ -18,7 +18,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.review.Comment;
+import com.robocon321.demo.entity.review.Vote;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -65,8 +67,10 @@ public class Post {
 	@Column(nullable = false)
 	private String slug;
 	
+	@Column(name = "meta_title")
 	private String metaTitle;
 	
+	@Column(name = "meta_description")
 	private String metaDescription;
 	
 	@Column(name = "comment_status", 
@@ -82,7 +86,7 @@ public class Post {
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
 	private Integer status;
 		
-	@ManyToOne(targetEntity = User.class)
+	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "mod_user_id", nullable = false)
 	private User modifiedUser;
 	
@@ -98,7 +102,15 @@ public class Post {
 	@JsonIgnore
 	private List<Post> posts;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentComment")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
 	@JsonIgnore
 	private List<Comment> comments;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+	@JsonIgnore
+	private List<Vote> votes;	
+
+	@OneToOne(mappedBy = "post")
+	@JsonIgnore
+	private Product product;
 }

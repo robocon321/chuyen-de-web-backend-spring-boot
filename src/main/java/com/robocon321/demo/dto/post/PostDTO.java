@@ -1,5 +1,6 @@
 package com.robocon321.demo.dto.post;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,6 @@ public class PostDTO {
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
-	private List<PostDTO> posts;
-	private List<CommentDTO> comments;
+	private List<PostDTO> posts = new ArrayList<>();
+	private List<CommentDTO> comments = new ArrayList<>();
 }

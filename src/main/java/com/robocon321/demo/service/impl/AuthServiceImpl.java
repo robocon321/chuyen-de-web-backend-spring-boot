@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.robocon321.demo.dto.user.RoleDTO;
 import com.robocon321.demo.dto.user.UserAccountDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.dto.user.UserSocialDTO;
@@ -170,6 +171,13 @@ public class AuthServiceImpl implements AuthService {
 			User user = userSocialOptional.get().getUser();
 			UserDTO userDTO = new UserDTO();
 			BeanUtils.copyProperties(user, userDTO);
+			
+			user.getRoles().forEach(role -> {
+				RoleDTO roleDTO = new RoleDTO();
+				BeanUtils.copyProperties(role, roleDTO);
+				userDTO.getRoles().add(roleDTO);
+			});			
+
 			return userDTO;
 		} else
 			throw new RuntimeException("Your social account not exists");

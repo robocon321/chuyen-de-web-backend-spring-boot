@@ -12,8 +12,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.post.Post;
-import com.robocon321.demo.entity.taxomony.Taxomony;
-import com.robocon321.demo.entity.taxomony.TaxomonyMeta;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +27,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@OneToOne(cascade = CascadeType.ALL, targetEntity = Post.class)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "post_id", nullable = false)
 	@JsonIgnore
 	private Post post;

@@ -16,7 +16,7 @@ public class UserService implements UserDetailsService {
 	private UserAccountRepository userAccountRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public CustomUserDetailsDomain loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserAccount userAccount = userAccountRepository.findByUsername(username);
 		if (userAccount == null) {
 			throw new UsernameNotFoundException(username);
@@ -27,7 +27,7 @@ public class UserService implements UserDetailsService {
 		return userDetails;
 	}
 
-	public UserDetails loadUserById(int userId) {
+	public CustomUserDetailsDomain loadUserById(int userId) {
 		UserAccount userAccount = userAccountRepository.findByUser_id(userId);
 		if (userAccount == null) {
 			throw new UsernameNotFoundException(userId + "");
