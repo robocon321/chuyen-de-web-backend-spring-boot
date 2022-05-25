@@ -1,6 +1,5 @@
 package com.robocon321.demo.entity.post;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +26,8 @@ public class PostMeta {
 	private String key;
 	private String value;
 	
-	@ManyToOne(cascade = CascadeType.ALL, targetEntity = Post.class)
-	@JoinColumn(name = "post_id")
+	@ManyToOne(targetEntity = Post.class)
+	@JoinColumn(name = "post_id", nullable = false)
 	@JsonIgnore
 	private Post post;
 

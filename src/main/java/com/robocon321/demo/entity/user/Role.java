@@ -28,7 +28,7 @@ public class Role {
 	@Column(nullable = false, unique = true, name = "name")
 	private String name;
 	
-	@ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JsonIgnore
 	private List<User> users;
 }

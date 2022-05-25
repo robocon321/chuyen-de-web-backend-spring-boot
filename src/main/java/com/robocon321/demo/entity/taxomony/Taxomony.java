@@ -44,7 +44,7 @@ public class Taxomony {
 	
 	private String description;
 
-	@OneToOne(cascade = CascadeType.ALL, targetEntity = Taxomony.class)
+	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = Taxomony.class)
 	@JoinColumn(name = "parent_id")
 	@JsonIgnore
 	private Taxomony parentTaxomony;
@@ -53,7 +53,7 @@ public class Taxomony {
 	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	
@@ -62,7 +62,11 @@ public class Taxomony {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<TaxomonyMeta> metas;
+	
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentTaxomony")
+	@JsonIgnore
+	private List<Taxomony> taxomonies;
 }

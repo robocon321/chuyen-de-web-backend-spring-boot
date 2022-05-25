@@ -1,6 +1,5 @@
 package com.robocon321.demo.entity.user;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,8 +37,8 @@ public class UserAccount {
 			nullable = false)
 	private String password;
 	
-	@OneToOne(cascade = CascadeType.ALL, targetEntity = User.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
 	@JsonIgnore
 	private User user;
 

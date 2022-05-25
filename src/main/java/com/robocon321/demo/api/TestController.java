@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObjectDomain;
-import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.user.UserAccount;
+import com.robocon321.demo.repository.CartRepository;
+import com.robocon321.demo.repository.CheckoutRepository;
 import com.robocon321.demo.repository.PostRepository;
+import com.robocon321.demo.repository.ProductRepository;
+import com.robocon321.demo.repository.UserAccountRepository;
 import com.robocon321.demo.repository.UserRepository;
 
 @RestController("/test")
-public class TestController {
+public class TestController {	
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private PostRepository postRepository;
 	
 	@PostMapping("/user")
 	public ResponseEntity a(@RequestBody String pathname) {
@@ -33,17 +34,16 @@ public class TestController {
 		return null;
 	}
 	
-	@DeleteMapping("/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity b(@PathVariable Integer id) {
 		ResponseObjectDomain obj = new ResponseObjectDomain<>();
 		try {
 			userRepository.deleteById(id);
+//			obj.setData(productRepository.findById(id));
 			obj.setSuccess(true);
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(obj);
 	}
 }
-	

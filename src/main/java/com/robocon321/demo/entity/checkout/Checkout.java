@@ -9,12 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.common.Contact;
-import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -31,8 +30,8 @@ public class Checkout {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(targetEntity = Cart.class)
-	@JoinColumn(name = "cart_id")
+	@OneToOne(targetEntity = Cart.class)
+	@JoinColumn(name = "cart_id", nullable = false)
 	@JsonIgnore
 	private Cart cart;
 	
@@ -43,7 +42,7 @@ public class Checkout {
 	private Double cartPrice;
 	
 	@ManyToOne(targetEntity = Contact.class)
-	@JoinColumn(name = "contact_id")	
+	@JoinColumn(name = "contact_id")
 	@JsonIgnore
 	private Contact contact;
 	
@@ -54,11 +53,6 @@ public class Checkout {
 	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
 	private Integer status;
-		
-	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
-	@JsonIgnore
-	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
 			nullable = false, 

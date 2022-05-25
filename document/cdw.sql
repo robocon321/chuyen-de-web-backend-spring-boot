@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 );
 
 ALTER TABLE `user`
-ADD FOREIGN KEY (mod_user_id) REFERENCES user(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES user(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_role (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS user_role (
 );
 
 ALTER TABLE `user_role`
-ADD FOREIGN KEY (role_id) REFERENCES `role`(id);
+ADD FOREIGN KEY (role_id) REFERENCES `role`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `user_role`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_account (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS user_account (
 );
 
 ALTER TABLE `user_account`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_social (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS user_social (
 );
 
 ALTER TABLE `user_social`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 CREATE TABLE IF NOT EXISTS post (
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS post (
     content TEXT NOT NULL,
     `description` VARCHAR(500) NOT NULL,
     `view` INT DEFAULT 0 NOT NULL,
-    thumbnail VARCHAR(2000) NOT NULL,
+    thumbnail VARCHAR(2000),
     gallery_image TEXT,
     `type` VARCHAR(50) NOT NULL,
     parent_id INT,
@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS post (
 );
 
 ALTER TABLE `post`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `post`
-ADD FOREIGN KEY (parent_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (parent_id) REFERENCES `post`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 
 CREATE TABLE IF NOT EXISTS post_meta (
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS post_meta (
 );
 
 ALTER TABLE `post_meta`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -104,10 +104,10 @@ CREATE TABLE IF NOT EXISTS taxomony (
 );
 
 ALTER TABLE `taxomony`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `taxomony`
-ADD FOREIGN KEY (parent_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (parent_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony_meta (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS taxomony_meta (
 );
 
 ALTER TABLE `taxomony_meta`
-ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony_relationship (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -125,15 +125,12 @@ CREATE TABLE IF NOT EXISTS taxomony_relationship (
     taxomony_id INT NOT NULL
 );
 
-ALTER TABLE `post`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
-
 ALTER TABLE `taxomony_relationship`
-ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS product (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	post_id INT NOT NULL UNIQUE,
+	post_id INT NOT NULL,
  	min_price DOUBLE NOT NULL,
     max_price DOUBLE NOT NULL,
     stock_quantity INT DEFAULT 0,
@@ -146,7 +143,7 @@ CREATE TABLE IF NOT EXISTS product (
 );
 
 ALTER TABLE `product`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS link_post (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -155,24 +152,24 @@ CREATE TABLE IF NOT EXISTS link_post (
 );
 
 ALTER TABLE `link_post`
-ADD FOREIGN KEY (post1_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post1_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `link_post`
-ADD FOREIGN KEY (post2_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post2_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS attribute (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     product_id INT,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `attribute`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `attribute`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS wishlist (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -181,20 +178,20 @@ CREATE TABLE IF NOT EXISTS wishlist (
 );
 
 ALTER TABLE `wishlist`
-ADD FOREIGN KEY (user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `wishlist`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS cart (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	`status` INT DEFAULT 1, 
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `cart`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS cart_item (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -204,10 +201,10 @@ CREATE TABLE IF NOT EXISTS cart_item (
 );
 
 ALTER TABLE `cart_item`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `cart_item`
-ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
+ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS contact (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -219,48 +216,44 @@ CREATE TABLE IF NOT EXISTS contact (
     detail_address TEXT NOT NULL,
     `priority` INT DEFAULT 0,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE contact
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS payment_method (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	`name` VARCHAR(50) NOT NULL,
     `image` VARCHAR(2000) NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `payment_method`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS checkout (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     cart_id INT NOT NULL,
     shipping_price DOUBLE NOT NULL,
     cart_price DOUBLE NOT NULL,
-    contact_id INT NOT NULL,
-    paymethod_id INT NOT NULL,
+    contact_id INT,
+    paymethod_id INT,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
+ADD FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (contact_id) REFERENCES contact(id);
-
-ALTER TABLE `checkout`
-ADD FOREIGN KEY (paymethod_id) REFERENCES `payment_method`(id);
+ADD FOREIGN KEY (paymethod_id) REFERENCES `payment_method`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS vote (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -268,15 +261,15 @@ CREATE TABLE IF NOT EXISTS vote (
     star INT NOT NULL,
     content TEXT,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `vote`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `vote`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS comment (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -284,12 +277,23 @@ CREATE TABLE IF NOT EXISTS comment (
     parent_id INT,
     post_id INT NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `comment`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `comment` 
+ADD FOREIGN KEY (parent_id) REFERENCES `comment`(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `comment` 
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+
+
 
 
 insert into user (fullname, email, phone, avatar, status, mod_user_id, mod_time) values ('Barnett Templman', 'robocon321b@gmail.com', '754-846-9619', 'http://dummyimage.com/211x235.png/cc0000/ffffff', 1, 1, '2021-08-30');
@@ -1888,56 +1892,56 @@ insert into payment_method (name, image, status, mod_user_id, mod_time) values (
 
 
 
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (56, 45000, 859000, 47, 2, 1, 12, '2021-04-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (40, 4000, 877000, 21, 2, 1, 6, '2021-05-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 24000, 534000, 36, 1, 1, 15, '2021-11-15');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 43000, 687000, 34, 2, 1, 11, '2021-12-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (92, 26000, 934000, 11, 2, 1, 9, '2022-04-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 45000, 646000, 18, 4, 1, 8, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (61, 27000, 825000, 11, 5, 1, 3, '2022-03-30');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 47000, 934000, 2, 5, 1, 8, '2021-08-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 30000, 407000, 24, 4, 1, 18, '2022-02-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 27000, 597000, 42, 1, 1, 11, '2021-09-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 36000, 450000, 26, 5, 1, 17, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 48000, 606000, 28, 5, 1, 20, '2021-06-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (68, 35000, 94000, 18, 2, 1, 13, '2021-11-17');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (13, 50000, 28000, 47, 5, 1, 16, '2021-08-29');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (70, 32000, 11000, 13, 2, 1, 7, '2022-04-01');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 15000, 148000, 24, 4, 1, 20, '2022-02-24');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (47, 25000, 102000, 25, 1, 1, 16, '2022-01-25');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 21000, 250000, 50, 5, 1, 13, '2022-01-12');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (79, 2000, 176000, 36, 5, 1, 18, '2022-03-05');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (45, 50000, 670000, 25, 2, 1, 16, '2021-08-18');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (73, 48000, 654000, 42, 4, 1, 17, '2021-09-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 40000, 429000, 22, 2, 1, 9, '2021-12-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (27, 2000, 645000, 4, 1, 1, 2, '2021-07-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 4000, 909000, 19, 3, 1, 15, '2022-03-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 8000, 352000, 2, 1, 1, 2, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 9000, 776000, 25, 4, 1, 3, '2021-12-29');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 26000, 905000, 40, 5, 1, 16, '2022-01-16');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (75, 13000, 972000, 27, 3, 1, 7, '2021-05-26');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 15000, 634000, 22, 2, 1, 8, '2022-01-23');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (3, 38000, 11000, 26, 1, 1, 5, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (84, 34000, 646000, 10, 2, 1, 14, '2022-02-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (24, 32000, 740000, 25, 1, 1, 19, '2021-05-24');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (30, 18000, 203000, 32, 4, 1, 19, '2021-08-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 13000, 847000, 35, 5, 1, 16, '2021-10-26');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (7, 16000, 509000, 36, 5, 1, 19, '2021-05-06');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (16, 44000, 523000, 29, 2, 1, 12, '2021-07-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 13000, 905000, 14, 1, 1, 1, '2021-10-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (48, 29000, 836000, 34, 2, 1, 12, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (82, 50000, 32000, 2, 4, 1, 3, '2022-02-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (77, 12000, 382000, 14, 4, 1, 3, '2022-01-21');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 4000, 924000, 41, 5, 1, 9, '2022-01-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (60, 31000, 948000, 15, 1, 1, 4, '2021-10-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (12, 21000, 204000, 19, 5, 1, 1, '2021-08-17');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (100, 32000, 731000, 27, 3, 1, 15, '2022-01-01');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (52, 39000, 680000, 16, 2, 1, 12, '2022-03-06');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 14000, 368000, 21, 5, 1, 20, '2022-02-16');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (85, 13000, 389000, 20, 4, 1, 16, '2021-09-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (76, 45000, 890000, 7, 5, 1, 11, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 20000, 334000, 2, 3, 1, 17, '2021-12-18');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (74, 20000, 305000, 36, 3, 1, 19, '2021-10-20');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (81, 45000, 859000, 47, 2, 1, '2021-04-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (82, 4000, 877000, 21, 2, 1, '2021-05-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (83, 24000, 534000, 36, 1, 1, '2021-11-15');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (84, 43000, 687000, 34, 2, 1, '2021-12-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (5, 26000, 934000, 11, 2, 1, '2022-04-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (6, 45000, 646000, 18, 4, 1, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (7, 27000, 825000, 11, 5, 1, '2022-03-30');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (8, 47000, 934000, 2, 5, 1, '2021-08-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (9, 30000, 407000, 24, 4, 1, '2022-02-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (10, 27000, 597000, 42, 1, 1, '2021-09-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (11, 36000, 450000, 26, 5, 1, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (12, 48000, 606000, 28, 5, 1, '2021-06-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (13, 35000, 94000, 18, 2, 1,  '2021-11-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (14, 50000, 28000, 47, 5, 1,  '2021-08-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (15, 32000, 11000, 13, 2, 1, '2022-04-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (16, 15000, 148000, 24, 4, 1, '2022-02-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (17, 25000, 102000, 25, 1, 1, '2022-01-25');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (18, 21000, 250000, 50, 5, 1, '2022-01-12');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (19, 2000, 176000, 36, 5, 1, '2022-03-05');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (20, 50000, 670000, 25, 2, 1, '2021-08-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (21, 48000, 654000, 42, 4, 1, '2021-09-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (22, 40000, 429000, 22, 2, 1, '2021-12-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (23, 2000, 645000, 4, 1, 1, '2021-07-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (24, 4000, 909000, 19, 3, 1, '2022-03-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (25, 8000, 352000, 2, 1, 1, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (26, 9000, 776000, 25, 4, 1, '2021-12-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (27, 26000, 905000, 40, 5, 1, '2022-01-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (28, 13000, 972000, 27, 3, 1, '2021-05-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (29, 15000, 634000, 22, 2, 1, '2022-01-23');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (30, 38000, 11000, 26, 1, 1, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (31, 34000, 646000, 10, 2, 1, '2022-02-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (32, 32000, 740000, 25, 1, 1, '2021-05-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (33, 18000, 203000, 32, 4, 1, '2021-08-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (34, 13000, 847000, 35, 5, 1, '2021-10-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (35, 16000, 509000, 36, 5, 1, '2021-05-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (36, 44000, 523000, 29, 2, 1, '2021-07-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (37, 13000, 905000, 14, 1, 1, '2021-10-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (48, 29000, 836000, 34, 2, 1, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (49, 50000, 32000, 2, 4, 1, '2022-02-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (50, 12000, 382000, 14, 4, 1, '2022-01-21');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (51, 4000, 924000, 41, 5, 1, '2022-01-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (52, 31000, 948000, 15, 1, 1, '2021-10-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (53, 21000, 204000, 19, 5, 1, '2021-08-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (64, 32000, 731000, 27, 3, 1, '2022-01-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (65, 39000, 680000, 16, 2, 1, '2022-03-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (66, 14000, 368000, 21, 5, 1, '2022-02-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (67, 13000, 389000, 20, 4, 1, '2021-09-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (68, 45000, 890000, 7, 5, 1, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (69, 20000, 334000, 2, 3, 1, '2021-12-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (70, 20000, 305000, 36, 3, 1, '2021-10-20');
 
 
 

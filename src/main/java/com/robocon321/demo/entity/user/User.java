@@ -14,12 +14,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.checkout.Cart;
+import com.robocon321.demo.entity.checkout.Checkout;
+import com.robocon321.demo.entity.checkout.PaymentMethod;
+import com.robocon321.demo.entity.common.Contact;
+import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.post.product.Attribute;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.entity.review.Vote;
+import com.robocon321.demo.entity.taxomony.Taxomony;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,7 +53,6 @@ public class User {
 	@Column(name = "email", 
 			columnDefinition = "VARCHAR", 
 			length = 50)
-	@JsonIgnore
 	private String email;
 	
 	@Column(name = "phone",
@@ -72,7 +79,7 @@ public class User {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "user_role", 
 			joinColumns = @JoinColumn(name = "user_id"),
@@ -81,18 +88,27 @@ public class User {
 	@JsonIgnore
 	private List<Role> roles;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@JsonIgnore
+	private List<UserSocial> userSocials;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+	@JsonIgnore
+	private UserAccount userAccount;
+	
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "wishlist",
 				joinColumns = @JoinColumn(name = "user_id"),
 				inverseJoinColumns = @JoinColumn(name = "product_id"))
 	@JsonIgnore
 	private List<Product> wishlist;	
+	
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "modifiedUser")
+	@JsonIgnore
+	private List<Cart> carts;
+	
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "modifiedUser")
+	@JsonIgnore
+	private List<Post> posts;
 
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modifiedUser")
-//	@JsonIgnore
-//	private List<Vote> votes;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "modifiedUser")
-//	@JsonIgnore
-//	private List<Comment> comments;
 }

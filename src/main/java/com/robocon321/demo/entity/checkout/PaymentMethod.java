@@ -3,6 +3,7 @@ package com.robocon321.demo.entity.checkout;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cart")
+@Table(name = "payment_method")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class PaymentMethod {
 	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	
@@ -48,4 +49,7 @@ public class PaymentMethod {
 			nullable = false, 
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "paymentMethod")
+	private List<Checkout> checkouts;
 }

@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -49,18 +50,15 @@ public class Post {
 	@Column(nullable = false, columnDefinition  = "DEFAULT 0")
 	private int view;
 	
-	@Column(nullable = false, columnDefinition = "DEFAULT ''")
 	private String thumbnail;
 	
-	@Column(name = "gallery_image", 
-			nullable = false, 
-			columnDefinition = "DEFAULT '[]'")
+	@Column(name = "gallery_image")
 	private String galleryImage;
 	
 	@Column(nullable = false)
 	private String type;
 	
-	@OneToOne(cascade = CascadeType.ALL, targetEntity = Post.class)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "parent_id")
 	private Post parentPost;
 	
@@ -86,8 +84,9 @@ public class Post {
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
 	private Integer status;
 		
-	@ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@ManyToOne(targetEntity = User.class)
+	@JoinColumn(name = "mod_user_id")
+	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 
@@ -95,22 +94,30 @@ public class Post {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "link_post", 
-				joinColumns = @JoinColumn(nullable = false, name = "post1_id"), 
-				inverseJoinColumns = @JoinColumn(nullable = false, name = "post2_id"))	
-	@JsonIgnore
-	private List<Post> posts;
+//	@ManyToMany(cascade = CascadeType.REMOVE)
+//	@JoinTable(name = "link_post", 
+//				joinColumns = @JoinColumn(nullable = false, name = "post1_id"), 
+//				inverseJoinColumns = @JoinColumn(nullable = false, name = "post2_id"))	
+//	@JsonIgnore
+//	private List<Post> linkPosts;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "post")
 	@JsonIgnore
 	private List<Comment> comments;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "post")
 	@JsonIgnore
 	private List<Vote> votes;	
+	
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "post")
+	@JsonIgnore
+	private List<PostMeta> postMetas;
+	
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentPost")
+	@JsonIgnore
+	private List<Post> posts;
 
-	@OneToOne(mappedBy = "post")
+	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "post")
 	@JsonIgnore
 	private Product product;
 }
