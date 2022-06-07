@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.common.ViewObj;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Taxomony {
+public class Taxomony implements ViewObj{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -62,6 +63,8 @@ public class Taxomony {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
+	// Thêm formula product 
+	
 	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<TaxomonyMeta> metas;
@@ -69,4 +72,8 @@ public class Taxomony {
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentTaxomony")
 	@JsonIgnore
 	private List<Taxomony> taxomonies;
+	
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "taxomony")
+	@JsonIgnore
+	private List<TaxomonyRelationship> relationships;
 }

@@ -18,10 +18,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.common.ViewObj;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.entity.review.Vote;
+import com.robocon321.demo.entity.taxomony.TaxomonyObj;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +37,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Post implements ViewObj, TaxomonyObj {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -46,9 +50,6 @@ public class Post {
 	
 	@Column(nullable = false)
 	private String description;
-	
-	@Column(nullable = false, columnDefinition  = "DEFAULT 0")
-	private int view;
 	
 	private String thumbnail;
 	
@@ -71,18 +72,11 @@ public class Post {
 	@Column(name = "meta_description")
 	private String metaDescription;
 	
-	@Column(name = "comment_status", 
-			nullable = false, 			
-			columnDefinition = "DEFAULT 1")
-	private Integer commentStatus;
-	
-	@Column(name = "comment_count", 
-			nullable = false, 			
-			columnDefinition = "DEFAULT 1")
-	private Integer commentCount;
-	
 	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
 	private Integer status;
+	
+	@Formula("(select count(*) from comment where comment.post_id=id)")
+	private Integer totalComment;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id")
