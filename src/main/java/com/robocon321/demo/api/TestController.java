@@ -1,49 +1,44 @@
 package com.robocon321.demo.api;
 
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObjectDomain;
 import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.repository.PostRepository;
-import com.robocon321.demo.repository.UserRepository;
+import com.robocon321.demo.repository.ProductRepository;
 
-@RestController("/test")
-public class TestController {
+@RestController
+@RequestMapping("/test")
+public class TestController {	
 	@Autowired
-	private UserRepository userRepository;
+	private ProductRepository productRepository;
 	
-	@Autowired
-	private PostRepository postRepository;
-	
-	@PostMapping("/user")
-	public ResponseEntity a(@RequestBody String pathname) {
-		pathname = pathname.replace("=", "");
-		String[] paths = pathname.split("%2F");
-		for(String path : paths) {
-			System.out.println(path);
-		}
-		return null;
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity b(@PathVariable Integer id) {
+	@GetMapping("/")
+	public ResponseEntity b(@RequestParam(name = "filter[*]") Map<String, String> filter) {
+//		String[] arrSort = sort.split("__");
+		
 		ResponseObjectDomain obj = new ResponseObjectDomain<>();
 		try {
-			userRepository.deleteById(id);
+//			Page<Product> page = productRepository.findAll(PageRequest.of(0, 10, Sort.by(arrSort[1].equals("ASC") ? Direction.ASC : Direction.DESC, arrSort[0])));
+//			obj.setData(page);
+			obj.setData(filter);
 			obj.setSuccess(true);
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(obj);
 	}
 }
-	

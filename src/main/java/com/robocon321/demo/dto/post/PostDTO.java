@@ -21,7 +21,6 @@ public class PostDTO {
 	private String title;
 	private String content;
 	private String description;
-	private Integer view;
 	private String thumbnail;
 	private String galleryImage;
 	private String type;

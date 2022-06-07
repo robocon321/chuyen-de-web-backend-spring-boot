@@ -1,7 +1,6 @@
 package com.robocon321.demo.entity.review;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,11 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.robocon321.demo.entity.checkout.PaymentMethod;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
 
@@ -46,7 +43,7 @@ public class Vote {
 	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	

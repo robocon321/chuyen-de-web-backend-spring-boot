@@ -49,7 +49,7 @@ public class Comment {
 	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	
@@ -58,7 +58,7 @@ public class Comment {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentComment")
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentComment")
 	@JsonIgnore
 	private List<Comment> comments;
 }

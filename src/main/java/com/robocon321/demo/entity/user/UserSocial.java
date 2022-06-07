@@ -39,8 +39,8 @@ public class UserSocial {
 	@Column(name = "uid", nullable = false)
 	private String uid;
 
-	@OneToOne(targetEntity = User.class)
-	@JoinColumn(name = "user_id")
+	@ManyToOne(targetEntity = User.class)
+	@JoinColumn(name = "user_id", nullable = false)
 	@JsonIgnore
 	private User user;
 }

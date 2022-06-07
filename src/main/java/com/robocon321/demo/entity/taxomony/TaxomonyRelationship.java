@@ -1,4 +1,4 @@
-package com.robocon321.demo.entity.checkout;
+package com.robocon321.demo.entity.taxomony;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,33 +9,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Any;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.robocon321.demo.entity.post.product.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "cart_item")
+@Table(name = "taxomony_relationship")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CartItem {
+@AllArgsConstructor
+public class TaxomonyRelationship {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name = "product_id", nullable = false)
-	@JsonIgnore
-	private Product product;
 	
-	@Column(nullable = false, columnDefinition = "DEFAULT 1")
-	private Integer quantity;
+	@Any(metaDef = "taxomony_obj", metaColumn = @Column(name = "type", nullable = false))
+	@JoinColumn(name = "object_id", nullable = false)
+	private TaxomonyObj taxomonyObj;
 	
-	@ManyToOne(targetEntity = Cart.class)
-	@JoinColumn(name = "cart_id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "taxomony_id", nullable = false)
 	@JsonIgnore
-	private Cart cart;
+	private Taxomony taxomony;
 }

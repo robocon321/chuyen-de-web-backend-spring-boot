@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,8 +35,8 @@ public class Cart {
 	@Column(nullable = false)
 	private Integer status;
 	
-	@ManyToOne(cascade = CascadeType.ALL, targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@ManyToOne(targetEntity = User.class)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	
@@ -44,7 +45,11 @@ public class Cart {
 			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
 	private Date modifiedTime;
 	
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
 	@JsonIgnore
 	private List<CartItem> cartItems;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "cart")
+	@JsonIgnore
+	private Checkout checkout;
 }

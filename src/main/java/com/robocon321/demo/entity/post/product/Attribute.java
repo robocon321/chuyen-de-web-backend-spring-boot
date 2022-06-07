@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.taxomony.TaxomonyObj;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Attribute {
+public class Attribute implements TaxomonyObj {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -40,7 +41,7 @@ public class Attribute {
 	private Product product;
 		
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "mod_user_id", nullable = false)
+	@JoinColumn(name = "mod_user_id")
 	@JsonIgnore
 	private User modifiedUser;
 	

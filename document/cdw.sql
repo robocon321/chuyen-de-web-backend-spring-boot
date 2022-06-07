@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 );
 
 ALTER TABLE `user`
-ADD FOREIGN KEY (mod_user_id) REFERENCES user(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES user(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_role (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS user_role (
 );
 
 ALTER TABLE `user_role`
-ADD FOREIGN KEY (role_id) REFERENCES `role`(id);
+ADD FOREIGN KEY (role_id) REFERENCES `role`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `user_role`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_account (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS user_account (
 );
 
 ALTER TABLE `user_account`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_social (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS user_social (
 );
 
 ALTER TABLE `user_social`
-ADD FOREIGN KEY (user_id) REFERENCES user(id);
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 CREATE TABLE IF NOT EXISTS post (
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS post (
     content TEXT NOT NULL,
     `description` VARCHAR(500) NOT NULL,
     `view` INT DEFAULT 0 NOT NULL,
-    thumbnail VARCHAR(2000) NOT NULL,
+    thumbnail VARCHAR(2000),
     gallery_image TEXT,
     `type` VARCHAR(50) NOT NULL,
     parent_id INT,
@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS post (
 );
 
 ALTER TABLE `post`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `post`
-ADD FOREIGN KEY (parent_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (parent_id) REFERENCES `post`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 
 CREATE TABLE IF NOT EXISTS post_meta (
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS post_meta (
 );
 
 ALTER TABLE `post_meta`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -104,10 +104,10 @@ CREATE TABLE IF NOT EXISTS taxomony (
 );
 
 ALTER TABLE `taxomony`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `taxomony`
-ADD FOREIGN KEY (parent_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (parent_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony_meta (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS taxomony_meta (
 );
 
 ALTER TABLE `taxomony_meta`
-ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS taxomony_relationship (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -125,15 +125,12 @@ CREATE TABLE IF NOT EXISTS taxomony_relationship (
     taxomony_id INT NOT NULL
 );
 
-ALTER TABLE `post`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
-
 ALTER TABLE `taxomony_relationship`
-ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id);
+ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS product (
 	id INT PRIMARY KEY AUTO_INCREMENT,
-	post_id INT NOT NULL UNIQUE,
+	post_id INT NOT NULL,
  	min_price DOUBLE NOT NULL,
     max_price DOUBLE NOT NULL,
     stock_quantity INT DEFAULT 0,
@@ -146,7 +143,7 @@ CREATE TABLE IF NOT EXISTS product (
 );
 
 ALTER TABLE `product`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS link_post (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -155,24 +152,24 @@ CREATE TABLE IF NOT EXISTS link_post (
 );
 
 ALTER TABLE `link_post`
-ADD FOREIGN KEY (post1_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post1_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `link_post`
-ADD FOREIGN KEY (post2_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post2_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS attribute (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL,
     product_id INT,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `attribute`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `attribute`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS wishlist (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -181,20 +178,20 @@ CREATE TABLE IF NOT EXISTS wishlist (
 );
 
 ALTER TABLE `wishlist`
-ADD FOREIGN KEY (user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `wishlist`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS cart (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	`status` INT DEFAULT 1, 
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `cart`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS cart_item (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -204,10 +201,10 @@ CREATE TABLE IF NOT EXISTS cart_item (
 );
 
 ALTER TABLE `cart_item`
-ADD FOREIGN KEY (product_id) REFERENCES `product`(id);
+ADD FOREIGN KEY (product_id) REFERENCES `product`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `cart_item`
-ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
+ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS contact (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -219,48 +216,44 @@ CREATE TABLE IF NOT EXISTS contact (
     detail_address TEXT NOT NULL,
     `priority` INT DEFAULT 0,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE contact
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS payment_method (
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	`name` VARCHAR(50) NOT NULL,
     `image` VARCHAR(2000) NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `payment_method`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS checkout (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     cart_id INT NOT NULL,
     shipping_price DOUBLE NOT NULL,
     cart_price DOUBLE NOT NULL,
-    contact_id INT NOT NULL,
-    paymethod_id INT NOT NULL,
+    contact_id INT,
+    paymethod_id INT,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (cart_id) REFERENCES `cart`(id);
+ADD FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `checkout`
-ADD FOREIGN KEY (contact_id) REFERENCES contact(id);
-
-ALTER TABLE `checkout`
-ADD FOREIGN KEY (paymethod_id) REFERENCES `payment_method`(id);
+ADD FOREIGN KEY (paymethod_id) REFERENCES `payment_method`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS vote (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -268,15 +261,15 @@ CREATE TABLE IF NOT EXISTS vote (
     star INT NOT NULL,
     content TEXT,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `vote`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `vote`
-ADD FOREIGN KEY (post_id) REFERENCES `post`(id);
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE IF NOT EXISTS comment (
 	id INT PRIMARY KEY AUTO_INCREMENT,
@@ -284,12 +277,32 @@ CREATE TABLE IF NOT EXISTS comment (
     parent_id INT,
     post_id INT NOT NULL,
     `status` INT NOT NULL DEFAULT 1,
-    mod_user_id INT NOT NULL,
+    mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE `comment`
-ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id);
+ADD FOREIGN KEY (mod_user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `comment` 
+ADD FOREIGN KEY (parent_id) REFERENCES `comment`(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `comment` 
+ADD FOREIGN KEY (post_id) REFERENCES `post`(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+CREATE TABLE `view` (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    object_id INT NOT NULL,
+    type CHAR(10) NOT NULL,
+    cre_time DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+
 
 
 insert into user (fullname, email, phone, avatar, status, mod_user_id, mod_time) values ('Barnett Templman', 'robocon321b@gmail.com', '754-846-9619', 'http://dummyimage.com/211x235.png/cc0000/ffffff', 1, 1, '2021-08-30');
@@ -1888,56 +1901,56 @@ insert into payment_method (name, image, status, mod_user_id, mod_time) values (
 
 
 
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (56, 45000, 859000, 47, 2, 1, 12, '2021-04-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (40, 4000, 877000, 21, 2, 1, 6, '2021-05-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 24000, 534000, 36, 1, 1, 15, '2021-11-15');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 43000, 687000, 34, 2, 1, 11, '2021-12-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (92, 26000, 934000, 11, 2, 1, 9, '2022-04-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (8, 45000, 646000, 18, 4, 1, 8, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (61, 27000, 825000, 11, 5, 1, 3, '2022-03-30');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 47000, 934000, 2, 5, 1, 8, '2021-08-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (49, 30000, 407000, 24, 4, 1, 18, '2022-02-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 27000, 597000, 42, 1, 1, 11, '2021-09-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 36000, 450000, 26, 5, 1, 17, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 48000, 606000, 28, 5, 1, 20, '2021-06-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (68, 35000, 94000, 18, 2, 1, 13, '2021-11-17');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (13, 50000, 28000, 47, 5, 1, 16, '2021-08-29');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (70, 32000, 11000, 13, 2, 1, 7, '2022-04-01');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 15000, 148000, 24, 4, 1, 20, '2022-02-24');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (47, 25000, 102000, 25, 1, 1, 16, '2022-01-25');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 21000, 250000, 50, 5, 1, 13, '2022-01-12');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (79, 2000, 176000, 36, 5, 1, 18, '2022-03-05');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (45, 50000, 670000, 25, 2, 1, 16, '2021-08-18');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (73, 48000, 654000, 42, 4, 1, 17, '2021-09-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 40000, 429000, 22, 2, 1, 9, '2021-12-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (27, 2000, 645000, 4, 1, 1, 2, '2021-07-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (43, 4000, 909000, 19, 3, 1, 15, '2022-03-14');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 8000, 352000, 2, 1, 1, 2, '2021-07-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (51, 9000, 776000, 25, 4, 1, 3, '2021-12-29');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (53, 26000, 905000, 40, 5, 1, 16, '2022-01-16');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (75, 13000, 972000, 27, 3, 1, 7, '2021-05-26');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (83, 15000, 634000, 22, 2, 1, 8, '2022-01-23');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (3, 38000, 11000, 26, 1, 1, 5, '2021-11-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (84, 34000, 646000, 10, 2, 1, 14, '2022-02-27');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (24, 32000, 740000, 25, 1, 1, 19, '2021-05-24');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (30, 18000, 203000, 32, 4, 1, 19, '2021-08-19');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 13000, 847000, 35, 5, 1, 16, '2021-10-26');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (7, 16000, 509000, 36, 5, 1, 19, '2021-05-06');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (16, 44000, 523000, 29, 2, 1, 12, '2021-07-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 13000, 905000, 14, 1, 1, 1, '2021-10-07');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (48, 29000, 836000, 34, 2, 1, 12, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (82, 50000, 32000, 2, 4, 1, 3, '2022-02-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (77, 12000, 382000, 14, 4, 1, 3, '2022-01-21');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (31, 4000, 924000, 41, 5, 1, 9, '2022-01-02');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (60, 31000, 948000, 15, 1, 1, 4, '2021-10-04');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (12, 21000, 204000, 19, 5, 1, 1, '2021-08-17');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (100, 32000, 731000, 27, 3, 1, 15, '2022-01-01');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (52, 39000, 680000, 16, 2, 1, 12, '2022-03-06');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (19, 14000, 368000, 21, 5, 1, 20, '2022-02-16');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (85, 13000, 389000, 20, 4, 1, 16, '2021-09-22');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (76, 45000, 890000, 7, 5, 1, 11, '2021-05-11');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (4, 20000, 334000, 2, 3, 1, 17, '2021-12-18');
-insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_user_id, mod_time) values (74, 20000, 305000, 36, 3, 1, 19, '2021-10-20');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (81, 45000, 859000, 47, 2, 1, '2021-04-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (82, 4000, 877000, 21, 2, 1, '2021-05-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (83, 24000, 534000, 36, 1, 1, '2021-11-15');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (84, 43000, 687000, 34, 2, 1, '2021-12-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (5, 26000, 934000, 11, 2, 1, '2022-04-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (6, 45000, 646000, 18, 4, 1, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (7, 27000, 825000, 11, 5, 1, '2022-03-30');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (8, 47000, 934000, 2, 5, 1, '2021-08-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (9, 30000, 407000, 24, 4, 1, '2022-02-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (10, 27000, 597000, 42, 1, 1, '2021-09-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (11, 36000, 450000, 26, 5, 1, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (12, 48000, 606000, 28, 5, 1, '2021-06-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (13, 35000, 94000, 18, 2, 1,  '2021-11-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (14, 50000, 28000, 47, 5, 1,  '2021-08-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (15, 32000, 11000, 13, 2, 1, '2022-04-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (16, 15000, 148000, 24, 4, 1, '2022-02-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (17, 25000, 102000, 25, 1, 1, '2022-01-25');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (18, 21000, 250000, 50, 5, 1, '2022-01-12');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (19, 2000, 176000, 36, 5, 1, '2022-03-05');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (20, 50000, 670000, 25, 2, 1, '2021-08-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (21, 48000, 654000, 42, 4, 1, '2021-09-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (22, 40000, 429000, 22, 2, 1, '2021-12-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (23, 2000, 645000, 4, 1, 1, '2021-07-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (24, 4000, 909000, 19, 3, 1, '2022-03-14');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (25, 8000, 352000, 2, 1, 1, '2021-07-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (26, 9000, 776000, 25, 4, 1, '2021-12-29');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (27, 26000, 905000, 40, 5, 1, '2022-01-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (28, 13000, 972000, 27, 3, 1, '2021-05-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (29, 15000, 634000, 22, 2, 1, '2022-01-23');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (30, 38000, 11000, 26, 1, 1, '2021-11-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (31, 34000, 646000, 10, 2, 1, '2022-02-27');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (32, 32000, 740000, 25, 1, 1, '2021-05-24');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (33, 18000, 203000, 32, 4, 1, '2021-08-19');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (34, 13000, 847000, 35, 5, 1, '2021-10-26');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (35, 16000, 509000, 36, 5, 1, '2021-05-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (36, 44000, 523000, 29, 2, 1, '2021-07-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (37, 13000, 905000, 14, 1, 1, '2021-10-07');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (48, 29000, 836000, 34, 2, 1, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (49, 50000, 32000, 2, 4, 1, '2022-02-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (50, 12000, 382000, 14, 4, 1, '2022-01-21');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (51, 4000, 924000, 41, 5, 1, '2022-01-02');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (52, 31000, 948000, 15, 1, 1, '2021-10-04');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (53, 21000, 204000, 19, 5, 1, '2021-08-17');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (64, 32000, 731000, 27, 3, 1, '2022-01-01');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (65, 39000, 680000, 16, 2, 1, '2022-03-06');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (66, 14000, 368000, 21, 5, 1, '2022-02-16');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (67, 13000, 389000, 20, 4, 1, '2021-09-22');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (68, 45000, 890000, 7, 5, 1, '2021-05-11');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (69, 20000, 334000, 2, 3, 1, '2021-12-18');
+insert into checkout (cart_id, shipping_price, cart_price, contact_id, paymethod_id, status, mod_time) values (70, 20000, 305000, 36, 3, 1, '2021-10-20');
 
 
 
@@ -2546,3 +2559,309 @@ insert into comment (content, parent_id, post_id, status, mod_user_id, mod_time)
 insert into comment (content, parent_id, post_id, status, mod_user_id, mod_time) values ('nonummy integer non velit donec diam neque vestibulum eget vulputate ut ultrices vel augue vestibulum ante', NULL, 104, 1, 13, '2021-11-15');
 insert into comment (content, parent_id, post_id, status, mod_user_id, mod_time) values ('nec nisi vulputate nonummy maecenas tincidunt lacus at velit vivamus vel nulla eget eros elementum', NULL, 182, 1, 4, '2021-05-30');
 insert into comment (content, parent_id, post_id, status, mod_user_id, mod_time) values ('gravida sem praesent id massa id nisl venenatis lacinia aenean sit amet', NULL, 136, 1, 5, '2021-09-26');
+
+
+
+
+
+
+insert into `view` (user_id, object_id, type, cre_time) values (7, 46, 'post', '2021-06-11');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 16, 'product', '2022-03-08');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 8, 'taxomony', '2022-01-06');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 28, 'post', '2022-04-08');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 19, 'product', '2022-05-03');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 5, 'taxomony', '2022-04-03');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 24, 'post', '2022-01-27');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 6, 'post', '2021-12-14');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 49, 'post', '2021-06-25');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 46, 'product', '2021-09-08');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 31, 'post', '2022-06-02');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 47, 'post', '2022-02-08');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 39, 'product', '2022-01-31');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 29, 'taxomony', '2021-07-30');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 47, 'post', '2021-09-18');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 40, 'post', '2022-04-10');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 21, 'taxomony', '2022-01-26');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 32, 'post', '2022-03-18');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 16, 'post', '2022-04-16');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 36, 'post', '2021-07-16');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 23, 'product', '2021-09-03');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 43, 'post', '2021-10-08');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 42, 'post', '2021-12-25');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 50, 'post', '2021-10-04');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 10, 'taxomony', '2022-04-16');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 36, 'post', '2022-05-31');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 45, 'product', '2022-01-15');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 22, 'product', '2021-08-10');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 32, 'post', '2022-03-18');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 43, 'taxomony', '2022-01-18');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 38, 'taxomony', '2021-08-11');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 12, 'post', '2021-11-04');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 32, 'product', '2022-03-16');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 46, 'post', '2022-04-18');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 20, 'taxomony', '2022-03-12');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 21, 'taxomony', '2021-12-08');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 27, 'product', '2022-03-28');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 37, 'product', '2021-11-10');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 15, 'taxomony', '2022-04-02');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 36, 'taxomony', '2022-04-15');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 33, 'product', '2022-02-23');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 50, 'product', '2021-07-28');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 50, 'taxomony', '2021-09-07');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 38, 'product', '2022-02-17');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 27, 'post', '2021-07-14');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 43, 'taxomony', '2022-01-01');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 10, 'post', '2022-04-13');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 32, 'taxomony', '2022-04-10');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 10, 'taxomony', '2022-03-13');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 28, 'taxomony', '2021-11-11');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 45, 'post', '2021-08-13');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 24, 'product', '2021-07-05');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 36, 'taxomony', '2021-12-21');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 9, 'post', '2022-05-30');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 28, 'taxomony', '2021-10-11');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 24, 'product', '2021-12-01');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 10, 'post', '2021-10-02');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 22, 'product', '2022-01-08');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 41, 'taxomony', '2022-03-30');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 42, 'post', '2022-03-28');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 10, 'taxomony', '2021-08-20');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 6, 'product', '2021-09-17');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 48, 'post', '2021-08-14');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 40, 'taxomony', '2021-12-25');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 20, 'product', '2022-05-02');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 23, 'taxomony', '2022-02-21');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 21, 'post', '2021-09-10');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 20, 'product', '2022-04-10');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 36, 'taxomony', '2021-11-13');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 3, 'taxomony', '2021-12-19');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 1, 'post', '2021-06-14');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 20, 'taxomony', '2021-12-16');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 8, 'post', '2021-09-10');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 44, 'post', '2021-09-09');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 42, 'post', '2021-12-23');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 46, 'product', '2021-07-20');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 24, 'taxomony', '2022-05-24');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 21, 'taxomony', '2022-04-08');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 31, 'product', '2021-10-02');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 2, 'post', '2022-01-16');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 21, 'post', '2022-05-04');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 42, 'taxomony', '2021-11-13');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 47, 'post', '2021-12-04');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 5, 'post', '2022-02-13');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 28, 'taxomony', '2021-07-30');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 14, 'product', '2021-11-07');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 40, 'post', '2022-02-14');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 45, 'taxomony', '2022-02-24');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 25, 'product', '2022-01-23');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 8, 'taxomony', '2021-10-15');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 23, 'post', '2022-04-23');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 14, 'taxomony', '2021-06-23');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 11, 'taxomony', '2021-11-24');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 42, 'taxomony', '2021-08-03');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 40, 'product', '2021-06-23');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 4, 'taxomony', '2021-08-05');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 10, 'product', '2021-09-21');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 22, 'post', '2021-06-11');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 38, 'post', '2021-12-22');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 15, 'post', '2021-09-10');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 6, 'taxomony', '2022-04-18');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 20, 'post', '2022-04-01');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 39, 'product', '2021-08-02');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 31, 'post', '2021-08-06');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 49, 'post', '2022-04-15');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 50, 'product', '2021-08-05');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 7, 'taxomony', '2021-08-21');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 17, 'product', '2021-07-31');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 17, 'taxomony', '2022-03-22');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 25, 'post', '2022-05-26');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 6, 'post', '2022-05-17');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 27, 'taxomony', '2021-08-10');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 46, 'product', '2022-05-30');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 27, 'taxomony', '2021-11-28');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 47, 'taxomony', '2022-06-02');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 9, 'taxomony', '2021-06-10');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 3, 'taxomony', '2021-11-25');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 13, 'product', '2022-05-04');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 17, 'post', '2022-04-07');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 30, 'post', '2021-10-22');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 8, 'post', '2021-09-19');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 31, 'taxomony', '2021-10-11');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 30, 'product', '2021-12-23');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 25, 'taxomony', '2022-03-30');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 20, 'post', '2022-03-04');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 33, 'post', '2022-04-27');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 27, 'product', '2021-10-02');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 31, 'post', '2021-06-24');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 50, 'post', '2021-09-15');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 9, 'taxomony', '2021-09-29');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 35, 'taxomony', '2022-05-07');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 32, 'product', '2021-11-22');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 11, 'product', '2022-03-20');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 24, 'post', '2021-10-04');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 39, 'post', '2021-07-25');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 50, 'taxomony', '2021-11-28');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 37, 'post', '2022-03-30');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 26, 'product', '2022-04-25');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 12, 'product', '2021-07-25');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 25, 'taxomony', '2022-05-15');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 33, 'post', '2022-02-02');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 47, 'product', '2022-01-12');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 42, 'taxomony', '2022-05-18');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 42, 'taxomony', '2021-09-18');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 15, 'post', '2022-05-10');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 43, 'product', '2022-01-23');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 39, 'post', '2022-04-29');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 26, 'post', '2021-06-24');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 46, 'post', '2021-07-27');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 7, 'taxomony', '2021-09-20');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 24, 'product', '2022-05-14');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 10, 'taxomony', '2021-11-18');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 17, 'taxomony', '2021-12-08');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 40, 'product', '2021-11-14');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 3, 'product', '2022-02-25');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 39, 'product', '2021-09-15');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 5, 'taxomony', '2021-06-07');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 42, 'taxomony', '2021-12-24');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 42, 'post', '2021-12-02');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 5, 'post', '2021-09-18');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 38, 'post', '2021-09-12');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 1, 'taxomony', '2021-07-03');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 25, 'product', '2021-11-17');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 16, 'post', '2022-02-25');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 3, 'taxomony', '2022-05-13');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 7, 'post', '2021-11-11');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 45, 'taxomony', '2021-07-04');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 37, 'post', '2021-06-12');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 6, 'taxomony', '2021-08-28');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 10, 'product', '2021-08-19');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 15, 'taxomony', '2022-04-13');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 7, 'taxomony', '2021-09-05');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 1, 'post', '2021-10-29');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 6, 'post', '2022-01-01');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 45, 'post', '2021-07-30');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 1, 'product', '2021-11-09');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 36, 'taxomony', '2022-03-30');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 7, 'taxomony', '2021-11-24');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 16, 'product', '2021-08-19');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 28, 'post', '2021-06-12');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 6, 'post', '2022-02-23');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 38, 'post', '2021-07-20');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 31, 'product', '2022-02-04');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 29, 'taxomony', '2022-05-30');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 21, 'product', '2021-10-27');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 9, 'post', '2021-08-21');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 18, 'taxomony', '2021-06-10');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 23, 'post', '2021-09-25');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 15, 'post', '2021-11-22');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 41, 'product', '2022-04-03');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 14, 'post', '2021-07-02');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 16, 'post', '2022-04-05');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 43, 'product', '2022-03-09');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 25, 'product', '2022-05-01');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 21, 'product', '2021-12-13');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 38, 'taxomony', '2021-12-02');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 18, 'product', '2022-02-25');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 17, 'post', '2021-07-20');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 20, 'taxomony', '2022-02-20');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 45, 'product', '2021-11-25');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 9, 'product', '2021-06-17');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 47, 'taxomony', '2022-03-10');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 39, 'product', '2022-01-12');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 8, 'taxomony', '2021-11-17');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 23, 'post', '2022-01-25');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 42, 'post', '2021-08-31');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 16, 'taxomony', '2021-08-13');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 7, 'product', '2022-04-14');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 2, 'post', '2022-02-01');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 46, 'taxomony', '2021-11-20');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 21, 'taxomony', '2022-04-25');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 48, 'taxomony', '2021-12-03');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 25, 'post', '2021-11-22');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 45, 'taxomony', '2021-06-14');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 24, 'product', '2021-09-18');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 50, 'post', '2022-03-01');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 32, 'taxomony', '2022-02-11');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 1, 'post', '2021-10-08');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 50, 'product', '2021-10-19');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 50, 'product', '2022-02-19');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 25, 'product', '2022-03-16');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 42, 'taxomony', '2022-01-23');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 41, 'post', '2021-10-29');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 15, 'product', '2021-09-08');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 36, 'taxomony', '2022-01-28');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 10, 'taxomony', '2021-12-02');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 30, 'post', '2022-02-18');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 18, 'product', '2021-12-28');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 21, 'taxomony', '2022-05-26');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 17, 'taxomony', '2021-12-01');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 47, 'taxomony', '2022-01-09');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 7, 'taxomony', '2021-08-17');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 5, 'product', '2021-08-31');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 4, 'post', '2022-01-24');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 8, 'taxomony', '2021-08-04');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 1, 'post', '2021-10-11');
+insert into `view` (user_id, object_id, type, cre_time) values (3, 48, 'product', '2022-05-29');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 6, 'taxomony', '2021-07-21');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 5, 'product', '2022-05-07');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 26, 'taxomony', '2021-06-21');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 34, 'post', '2021-12-24');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 2, 'taxomony', '2021-07-06');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 44, 'product', '2022-05-01');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 30, 'taxomony', '2021-06-23');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 35, 'post', '2021-08-04');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 34, 'product', '2022-04-06');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 22, 'taxomony', '2021-09-15');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 46, 'taxomony', '2021-10-13');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 2, 'post', '2022-04-23');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 6, 'taxomony', '2021-11-30');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 34, 'taxomony', '2021-10-13');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 19, 'product', '2022-03-20');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 18, 'product', '2021-07-25');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 5, 'product', '2022-04-19');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 5, 'taxomony', '2022-05-27');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 50, 'product', '2021-07-08');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 27, 'taxomony', '2021-07-13');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 13, 'taxomony', '2022-05-26');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 2, 'product', '2022-05-29');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 50, 'post', '2022-04-09');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 49, 'product', '2021-11-29');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 4, 'taxomony', '2021-09-01');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 26, 'product', '2022-03-15');
+insert into `view` (user_id, object_id, type, cre_time) values (13, 11, 'post', '2021-09-12');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 44, 'taxomony', '2021-06-25');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 28, 'product', '2021-11-27');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 22, 'product', '2022-05-18');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 50, 'post', '2021-10-08');
+insert into `view` (user_id, object_id, type, cre_time) values (16, 7, 'product', '2021-11-24');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 36, 'taxomony', '2022-02-01');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 39, 'post', '2022-02-19');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 6, 'taxomony', '2022-06-02');
+insert into `view` (user_id, object_id, type, cre_time) values (12, 21, 'product', '2022-03-09');
+insert into `view` (user_id, object_id, type, cre_time) values (14, 48, 'post', '2022-02-01');
+insert into `view` (user_id, object_id, type, cre_time) values (1, 30, 'product', '2021-07-05');
+insert into `view` (user_id, object_id, type, cre_time) values (15, 26, 'post', '2021-09-19');
+insert into `view` (user_id, object_id, type, cre_time) values (19, 40, 'taxomony', '2022-03-29');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 2, 'post', '2021-10-06');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 44, 'product', '2021-11-06');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 23, 'post', '2021-11-22');
+insert into `view` (user_id, object_id, type, cre_time) values (2, 38, 'product', '2022-02-04');
+insert into `view` (user_id, object_id, type, cre_time) values (17, 13, 'product', '2022-04-25');
+insert into `view` (user_id, object_id, type, cre_time) values (9, 8, 'post', '2022-01-03');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 8, 'product', '2022-05-03');
+insert into `view` (user_id, object_id, type, cre_time) values (5, 38, 'taxomony', '2022-05-25');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 41, 'post', '2021-10-24');
+insert into `view` (user_id, object_id, type, cre_time) values (18, 24, 'post', '2021-09-06');
+insert into `view` (user_id, object_id, type, cre_time) values (20, 41, 'product', '2021-10-11');
+insert into `view` (user_id, object_id, type, cre_time) values (8, 43, 'product', '2021-07-01');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 9, 'post', '2022-04-04');
+insert into `view` (user_id, object_id, type, cre_time) values (7, 9, 'taxomony', '2022-05-10');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 20, 'post', '2021-08-07');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 35, 'post', '2021-12-07');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 14, 'post', '2021-09-01');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 36, 'product', '2022-04-07');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 45, 'post', '2022-01-29');
+insert into `view` (user_id, object_id, type, cre_time) values (6, 37, 'product', '2021-10-11');
+insert into `view` (user_id, object_id, type, cre_time) values (4, 22, 'post', '2022-01-08');
+insert into `view` (user_id, object_id, type, cre_time) values (10, 33, 'post', '2021-12-09');
+insert into `view` (user_id, object_id, type, cre_time) values (11, 13, 'post', '2021-12-22');
