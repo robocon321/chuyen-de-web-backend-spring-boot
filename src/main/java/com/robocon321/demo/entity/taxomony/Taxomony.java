@@ -40,9 +40,6 @@ public class Taxomony implements ViewObj{
 	@Column(nullable = false)
 	private String slug;
 	
-	@Column(nullable = false)
-	private String type;
-	
 	private String description;
 
 	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = Taxomony.class)

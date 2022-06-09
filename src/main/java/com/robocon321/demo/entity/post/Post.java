@@ -77,10 +77,12 @@ public class Post implements ViewObj, TaxomonyObj {
 	
 	@Formula("(select count(*) from comment where comment.post_id=id)")
 	private Integer totalComment;
+	
+	@Formula("(select ROUND(avg(vote.star), 1) from vote where vote.post_id = id)")
+	private Double averageRating;
 		
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id")
-	@JsonIgnore
 	private User modifiedUser;
 	
 	@Column(name = "mod_time", 

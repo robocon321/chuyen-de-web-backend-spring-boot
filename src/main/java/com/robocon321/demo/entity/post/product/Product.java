@@ -57,8 +57,11 @@ public class Product implements TaxomonyObj {
 	@Column(columnDefinition = "DEFAULT 0", nullable = false)
 	private Double height;
 	
+	@Column(name = "stock_quantity", columnDefinition = "DEFAULT 0", nullable = false)
+	private Integer stockQuantity;
+		
 	@Formula("(SELECT count(*) FROM product p JOIN cart_item ci ON p.id = ci.product_id JOIN cart ca ON ca.id = ci.cart_id JOIN checkout ck ON ck.cart_id = ca.id WHERE p.id = id GROUP BY p.id)")
-	private Integer totalSale;
+	private Integer totalSales;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
 	@JsonIgnore

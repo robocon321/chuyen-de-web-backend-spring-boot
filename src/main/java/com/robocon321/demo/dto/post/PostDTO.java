@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.robocon321.demo.dto.review.CommentDTO;
 import com.robocon321.demo.dto.user.UserDTO;
-import com.robocon321.demo.entity.post.Post;
-import com.robocon321.demo.entity.review.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,11 +26,11 @@ public class PostDTO {
 	private String slug;	
 	private String metaTitle;	
 	private String metaDescription;
-	private Integer commentStatus;
-	private Integer commentCount;
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
+	private Double averageRating;
+	private Integer totalComment;	
 	private List<PostDTO> posts = new ArrayList<>();
 	private List<CommentDTO> comments = new ArrayList<>();
 }
