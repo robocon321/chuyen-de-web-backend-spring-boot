@@ -67,8 +67,6 @@ CREATE TABLE IF NOT EXISTS post (
     slug VARCHAR(2000) NOT NULL,
     meta_title VARCHAR(100),
     meta_description VARCHAR(500),
-    comment_status INT DEFAULT 1,
-    comment_count INT DEFAULT 0,
     `status` INT DEFAULT 1,
     mod_user_id INT,
     mod_time DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -95,7 +93,6 @@ CREATE TABLE IF NOT EXISTS taxomony (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     `name` VARCHAR(100) NOT NULL,
     slug VARCHAR(2000) NOT NULL,
-    `type` VARCHAR(50) NOT NULL,
     parent_id INT,
     `description` VARCHAR(250),
     `status` INT DEFAULT 1,
@@ -122,7 +119,8 @@ ADD FOREIGN KEY (taxomony_id) REFERENCES `taxomony`(id) ON DELETE CASCADE ON UPD
 CREATE TABLE IF NOT EXISTS taxomony_relationship (
 	id INT PRIMARY KEY AUTO_INCREMENT,
     object_id INT NOT NULL,
-    taxomony_id INT NOT NULL
+    taxomony_id INT NOT NULL,
+    `type` VARCHAR(50) NOT NULL
 );
 
 ALTER TABLE `taxomony_relationship`
@@ -134,9 +132,6 @@ CREATE TABLE IF NOT EXISTS product (
  	min_price DOUBLE NOT NULL,
     max_price DOUBLE NOT NULL,
     stock_quantity INT DEFAULT 0,
-    count_rating INT NOT NULL,
-    everage_rating DOUBLE DEFAULT 0,
-    total_sales INT DEFAULT 0,
     `weight` DOUBLE DEFAULT 0,
     width DOUBLE DEFAULT 0,
     height DOUBLE DEFAULT 0

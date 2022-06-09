@@ -27,7 +27,6 @@ public class TaxomonyRelationship {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	
 	@Any(metaDef = "taxomony_obj", metaColumn = @Column(name = "type", nullable = false))
 	@JoinColumn(name = "object_id", nullable = false)
 	private TaxomonyObj taxomonyObj;
