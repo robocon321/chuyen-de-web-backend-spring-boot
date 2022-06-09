@@ -56,9 +56,6 @@ public class Post implements ViewObj, TaxomonyObj {
 	@Column(name = "gallery_image")
 	private String galleryImage;
 	
-	@Column(nullable = false)
-	private String type;
-	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "parent_id")
 	private Post parentPost;
