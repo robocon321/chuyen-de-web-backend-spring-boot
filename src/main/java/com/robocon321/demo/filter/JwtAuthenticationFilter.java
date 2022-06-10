@@ -15,11 +15,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.robocon321.demo.domain.CustomUserDetailsDomain;
+import com.robocon321.demo.domain.CustomUserDetails;
 import com.robocon321.demo.dto.user.RoleDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.user.User;
-import com.robocon321.demo.service.impl.UserService;
+import com.robocon321.demo.service.user.impl.UserService;
 import com.robocon321.demo.token.JwtTokenProvider;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 int userId = tokenProvider.getUserIdFromJWT(jwt);
-                CustomUserDetailsDomain userDetails = userService.loadUserById(userId);
+                CustomUserDetails userDetails = userService.loadUserById(userId);
                 UserDTO userDTO = new UserDTO();
                 
                 User user = userDetails.getUser();

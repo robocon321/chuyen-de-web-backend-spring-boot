@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robocon321.demo.domain.CustomUserDetailsDomain;
-import com.robocon321.demo.domain.ResponseObjectDomain;
-import com.robocon321.demo.dto.user.RoleDTO;
+import com.robocon321.demo.domain.CustomUserDetails;
+import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.dto.user.UserAccountDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.dto.user.UserSocialDTO;
 import com.robocon321.demo.entity.user.User;
-import com.robocon321.demo.service.AuthService;
+import com.robocon321.demo.service.user.AuthService;
 import com.robocon321.demo.token.JwtTokenProvider;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,7 @@ public class AuthController {
 
 	@PostMapping("/loginAccount")
 	public ResponseEntity loginAccount(@Valid @RequestBody UserAccountDTO userAccountDTO, BindingResult result) {
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+		ResponseObject response = new ResponseObject<>();
 		if (result.hasErrors()) {
 			String message = "";
 			for (ObjectError error : result.getAllErrors()) {
@@ -59,7 +58,7 @@ public class AuthController {
 								userAccountDTO.getPassword()));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 
-				User user = ((CustomUserDetailsDomain) authentication.getPrincipal()).getUser();
+				User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 				UserDTO userDTO = new UserDTO();
 				BeanUtils.copyProperties(user, userDTO);
 				String jwt = tokenProvider.generateToken(userDTO);
@@ -81,7 +80,7 @@ public class AuthController {
 
 	@PostMapping("/loginSocial")
 	public ResponseEntity loginSocial(@Valid @RequestBody UserSocialDTO userSocialDTO, BindingResult result) {
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+		ResponseObject response = new ResponseObject<>();
 		if (result.hasErrors()) {
 			String message = "";
 			for (ObjectError error : result.getAllErrors()) {
@@ -108,7 +107,7 @@ public class AuthController {
 	
 	@PostMapping("/loadUser")
 	public ResponseEntity loadUser() {
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+		ResponseObject response = new ResponseObject<>();
 		try {
 			UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			response.setData(obj);
@@ -125,7 +124,7 @@ public class AuthController {
 
 	@PostMapping("/registerByAccount")
 	public ResponseEntity registerByAccount(@Valid @RequestBody UserAccountDTO userAccountDTO, BindingResult result) {
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+		ResponseObject response = new ResponseObject<>();
 
 		if (result.hasErrors()) {
 			String message = "";
@@ -152,7 +151,7 @@ public class AuthController {
 
 	@PostMapping("/registerBySocial")
 	public ResponseEntity registerBySocial(@Valid @RequestBody UserSocialDTO userSocialDTO, BindingResult result) {
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+		ResponseObject response = new ResponseObject<>();
 		if (result.hasErrors()) {
 			String message = "";
 			for (ObjectError error : result.getAllErrors()) {

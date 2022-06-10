@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomUserDetailsDomain implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 	private UserAccount userAccount;
 	
 	@Override
