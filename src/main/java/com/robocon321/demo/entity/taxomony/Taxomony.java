@@ -41,7 +41,10 @@ public class Taxomony implements ViewObj{
 	private String slug;
 	
 	private String description;
-
+	
+	@Column(nullable = false)
+	private String type;
+	
 	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = Taxomony.class)
 	@JoinColumn(name = "parent_id")
 	@JsonIgnore

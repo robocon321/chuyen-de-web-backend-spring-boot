@@ -1,9 +1,8 @@
-package com.robocon321.demo.api.post.product;
+package com.robocon321.demo.api.taxomony;
 
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
-import com.robocon321.demo.dto.post.product.ProductDTO;
-import com.robocon321.demo.service.post.ProductService;
+import com.robocon321.demo.service.taxomony.TaxomonyService;
 
 @RestController
-@RequestMapping("/products")
-public class ProductController {
+@RequestMapping("/taxomonies")
+public class TaxomonyController {
 	@Autowired
-	private ProductService productService;
+	private TaxomonyService taxomonyService;
 	
 	@GetMapping("")
 	public ResponseEntity get(@RequestParam Map<String, String> request) {
@@ -55,12 +53,15 @@ public class ProductController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-				
-		Page<ProductDTO> pageResponse = productService.getPage(search, size, page, sort, request);
-		response.setData(pageResponse);
+		
+		if(request.containsKey("OR_type")) {
+			String[] types = request.get("OR_type").split("%2C");
+			response.setData(taxomonyService.getAllByType(types));
+		}
 		response.setMessage("Successful!");
 		response.setSuccess(true);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	
 }
