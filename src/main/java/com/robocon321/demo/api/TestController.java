@@ -13,22 +13,28 @@ import org.springframework.web.bind.annotation.RestController;
 import com.robocon321.demo.domain.CustomSpecification;
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.domain.ResponseObject;
+import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.repository.PostRepository;
+import com.robocon321.demo.repository.TaxomonyRepository;
 import com.robocon321.demo.type.FilterOperate;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {	
 	@Autowired
-	private PostRepository postRepository;
+	private TaxomonyRepository taxomonyRepository;
 	
 	@GetMapping("")
 	public ResponseEntity b() {
 		
 		ResponseObject obj = new ResponseObject<>();
 		try {
-			CustomSpecification spec1 = new CustomSpecification(new FilterCriteria("totalComment", FilterOperate.GREATER, 2));
-			obj.setData(postRepository.findAll(Specification.where(spec1)));
+			Specification spec1 = new CustomSpecification(new FilterCriteria("type", FilterOperate.EQUALS, "post"));
+			Specification spec2 = new CustomSpecification(new FilterCriteria("type", FilterOperate.EQUALS, "product"));
+			Specification s = spec1.or(spec2);
+			
+			obj.setData(taxomonyRepository.findAll(s));
 			obj.setSuccess(true);
 		} catch(Exception e) {
 			e.printStackTrace();

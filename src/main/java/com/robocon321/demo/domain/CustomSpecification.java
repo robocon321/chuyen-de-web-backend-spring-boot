@@ -12,14 +12,20 @@ import org.springframework.data.jpa.domain.Specification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CustomSpecification implements Specification {
 	private FilterCriteria criteria;
 
 	@Override
 	public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder builder) {
+		if(criteria == null) {
+			return null;
+		}
+		
 		switch (criteria.getOperator()) {
 		case GREATER:
 			return builder.greaterThanOrEqualTo(root.<String>get(criteria.getField()), criteria.getValue().toString());
