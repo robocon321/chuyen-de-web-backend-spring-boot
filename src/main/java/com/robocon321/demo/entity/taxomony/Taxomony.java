@@ -16,8 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.common.ViewObj;
+import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +51,7 @@ public class Taxomony implements ViewObj{
 	@ManyToOne(cascade = CascadeType.PERSIST, targetEntity = Taxomony.class)
 	@JoinColumn(name = "parent_id")
 	@JsonIgnore
-	private Taxomony parentTaxomony;
+	private Taxomony parent;
 	
 	@Column(columnDefinition = "DEFAULT 1")
 	private Integer status;
@@ -64,16 +67,14 @@ public class Taxomony implements ViewObj{
 	private Date modifiedTime;
 	
 	// Thêm formula product 
+	@Formula("(select count(*) from taxomony_relationship tr where tr.taxomony_id = id)")
+	private Integer totalPost;
 	
 	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<TaxomonyMeta> metas;
 	
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parentTaxomony")
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parent")
 	@JsonIgnore
-	private List<Taxomony> taxomonies;
-	
-	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "taxomony")
-	@JsonIgnore
-	private List<TaxomonyRelationship> relationships;
+	private List<Taxomony> childs;
 }

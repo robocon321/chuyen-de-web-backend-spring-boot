@@ -1,20 +1,17 @@
 package com.robocon321.demo.api;
 
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robocon321.demo.domain.CustomSpecification;
-import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.repository.PostRepository;
-import com.robocon321.demo.type.FilterOperate;
 
 @RestController
 @RequestMapping("/test")
@@ -27,8 +24,19 @@ public class TestController {
 		
 		ResponseObject obj = new ResponseObject<>();
 		try {
-			CustomSpecification spec1 = new CustomSpecification(new FilterCriteria("totalComment", FilterOperate.GREATER, 2));
-			obj.setData(postRepository.findAll(Specification.where(spec1)));
+			obj.setData(postRepository.findAll(PageRequest.of(0, 10)));
+			obj.setSuccess(true);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(obj);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity a(@PathVariable Integer id) {
+		ResponseObject obj = new ResponseObject<>();
+		try {
+			postRepository.deleteById(id);
 			obj.setSuccess(true);
 		} catch(Exception e) {
 			e.printStackTrace();

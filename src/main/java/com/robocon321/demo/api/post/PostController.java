@@ -50,8 +50,9 @@ public class PostController {
 		}
 		
 		try {
-			if(request.containsKey("size")) {
-				page  = Integer.parseInt(request.get("page"));
+			if(request.containsKey("page")) {
+				page  = Integer.parseInt(request.get("page")) - 1;
+				if(page < 0) page = 0;
 				request.remove("page");
 			}
 		} catch (Exception e) {

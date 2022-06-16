@@ -54,10 +54,7 @@ public class TaxomonyController {
 			e.printStackTrace();
 		}
 		
-		if(request.containsKey("OR_type")) {
-			String[] types = request.get("OR_type").split("%2C");
-			response.setData(taxomonyService.getAllByType(types));
-		}
+		response.setData(taxomonyService.getAll(request));
 		response.setMessage("Successful!");
 		response.setSuccess(true);
 
