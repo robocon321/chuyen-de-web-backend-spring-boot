@@ -19,7 +19,7 @@ public class TaxomonyDTO {
 	private String slug;
 	private String type;
 	private String description;
-	private Integer totalProduct;
+	private Integer totalPost;
 	private TaxomonyDTO parent;
 	private Integer status;
 	private User modifiedUser;

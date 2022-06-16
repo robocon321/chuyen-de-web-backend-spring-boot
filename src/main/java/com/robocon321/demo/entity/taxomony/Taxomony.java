@@ -20,6 +20,7 @@ import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.common.ViewObj;
+import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
@@ -67,7 +68,7 @@ public class Taxomony implements ViewObj{
 	
 	// Thêm formula product 
 	@Formula("(select count(*) from taxomony_relationship tr where tr.taxomony_id = id)")
-	private Integer totalProduct;
+	private Integer totalPost;
 	
 	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.REMOVE)
 	@JsonIgnore
@@ -76,8 +77,4 @@ public class Taxomony implements ViewObj{
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parent")
 	@JsonIgnore
 	private List<Taxomony> childs;
-	
-	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "taxomony")
-	@JsonIgnore
-	private List<TaxomonyRelationship> relationships;
 }

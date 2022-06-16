@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.robocon321.demo.domain.CustomSpecification;
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.taxomony.TaxomonyDTO;
 import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.repository.TaxomonyRepository;
 import com.robocon321.demo.service.taxomony.TaxomonyService;
+import com.robocon321.demo.specs.TaxomonySpecification;
 import com.robocon321.demo.type.FilterOperate;
 
 @Service
@@ -46,7 +46,7 @@ public class TaxomonyServiceImpl implements TaxomonyService {
 				String field = keyEntry.substring(3);
 				String[] arrValue = valueEntry.split("%2C");
 				for(String value : arrValue) {
-					Specification<Taxomony> specType = new CustomSpecification(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					Specification<Taxomony> specType = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
 					if(spec == null) {
 						spec = specType;
 					} else {
@@ -57,8 +57,8 @@ public class TaxomonyServiceImpl implements TaxomonyService {
 				String field = keyEntry.substring(8);
 				String[] arrValue = valueEntry.split("%2C");
 				if(arrValue.length == 2) {
-					Specification<Taxomony> specTypeGreater = new CustomSpecification(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
-					Specification<Taxomony> specTypeLess = new CustomSpecification(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					Specification<Taxomony> specTypeGreater = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
+					Specification<Taxomony> specTypeLess = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
 					spec = specTypeGreater.and(specTypeLess);
 				}
 			}
@@ -67,7 +67,7 @@ public class TaxomonyServiceImpl implements TaxomonyService {
 				String field = keyEntry.substring(4);
 				String[] arrValue = valueEntry.split("%2C");
 				for(String value : arrValue) {
-					Specification<Taxomony> specType = new CustomSpecification(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					Specification<Taxomony> specType = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
 					if(spec == null) {
 						spec = specType;
 					} else {
