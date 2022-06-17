@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.post.PostDTO;
+import com.robocon321.demo.dto.review.CommentDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.repository.PostRepository;
 import com.robocon321.demo.service.post.PostService;
 import com.robocon321.demo.specs.PostSpecification;
@@ -117,6 +119,22 @@ public class PostServiceImpl implements PostService {
 		    }
 		});	
 	}
+
+	@Override
+	public PostDTO getDetailPostBySlug(String slug) {
+		PostDTO postDTO = new PostDTO();
+		Post post = postRepository.findOneBySlug(slug);
+		if(post == null) return null;
+		BeanUtils.copyProperties(post, postDTO);		
+
+    	UserDTO userDTO = new UserDTO();
+    	BeanUtils.copyProperties(post.getModifiedUser(), userDTO);
+    	postDTO.setModifiedUser(userDTO);
+		
+		
+		return postDTO;
+	}
+
 
 	
 }

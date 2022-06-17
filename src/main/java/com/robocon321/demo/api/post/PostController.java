@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ import com.robocon321.demo.service.post.ProductService;
 public class PostController {
 	@Autowired
 	private PostService postService;
-	
+
 	@GetMapping("")
 	public ResponseEntity get(@RequestParam Map<String, String> request) {
 		String search = "";
@@ -30,40 +31,53 @@ public class PostController {
 		Integer page = 0;
 		Integer size = 10;
 		ResponseObject response = new ResponseObject<>();
-		
-		if(request.containsKey("search")) {
+
+		if (request.containsKey("search")) {
 			search = request.get("search");
 			request.remove("search");
 		}
-		if(request.containsKey("sort")) {
+		if (request.containsKey("sort")) {
 			sort = request.get("sort");
 			request.remove("sort");
 		}
-		
+
 		try {
-			if(request.containsKey("size")) {
-				size  = Integer.parseInt(request.get("size"));
+			if (request.containsKey("size")) {
+				size = Integer.parseInt(request.get("size"));
 				request.remove("size");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
-			if(request.containsKey("page")) {
-				page  = Integer.parseInt(request.get("page")) - 1;
-				if(page < 0) page = 0;
+			if (request.containsKey("page")) {
+				page = Integer.parseInt(request.get("page")) - 1;
+				if (page < 0)
+					page = 0;
 				request.remove("page");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-				
+
 		Page<PostDTO> pageResponse = postService.getPage(search, size, page, sort, request);
 		response.setData(pageResponse);
 		response.setMessage("Successful!");
 		response.setSuccess(true);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	@GetMapping("/{slug}")
+	public ResponseEntity get(@PathVariable String slug) {
+		ResponseObject obj = new ResponseObject<>();
+		try {
+			obj.setData(postService.getDetailPostBySlug(slug));
+			obj.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(obj);
 	}
 }
