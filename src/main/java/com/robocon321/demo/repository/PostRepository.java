@@ -12,4 +12,5 @@ import com.robocon321.demo.entity.post.Post;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecificationExecutor<Post> {
 	Page<Post> findByTitleContaining(String search, Specification<Post> spec, Pageable page);
+	Post findOneBySlug(String slug);
 }

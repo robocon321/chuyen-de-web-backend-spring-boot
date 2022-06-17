@@ -12,19 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.repository.PostRepository;
+import com.robocon321.demo.service.post.PostService;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {	
 	@Autowired
-	private PostRepository postRepository;
+	private PostService postRepository;
 	
-	@GetMapping("")
-	public ResponseEntity b() {
+	@GetMapping("/{slug}")
+	public ResponseEntity b(@PathVariable String slug) {
 		
 		ResponseObject obj = new ResponseObject<>();
 		try {
-			obj.setData(postRepository.findAll(PageRequest.of(0, 10)));
+			obj.setData(postRepository.getDetailPostBySlug(slug));
 			obj.setSuccess(true);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -36,7 +37,7 @@ public class TestController {
 	public ResponseEntity a(@PathVariable Integer id) {
 		ResponseObject obj = new ResponseObject<>();
 		try {
-			postRepository.deleteById(id);
+//			postRepository.deleteById(id);
 			obj.setSuccess(true);
 		} catch(Exception e) {
 			e.printStackTrace();
