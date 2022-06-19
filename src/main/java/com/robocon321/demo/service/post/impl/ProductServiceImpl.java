@@ -1,5 +1,6 @@
 package com.robocon321.demo.service.post.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.post.product.ProductDTO;
@@ -58,7 +61,35 @@ public class ProductServiceImpl implements ProductService {
 		    	return productDTO;
 		    }
 		});	
+	
+}
+//	
+//	public List<Product> findById(Integer id)
+	
+	@Override
+	public Product findBySlug(String slug) {
+		List<Product> list = productRepository.findAll();
+		for(Product product:list) {
+			if(product.getPost().getSlug().equals(slug)) {
+				
+				return product;
+			}
+		}
+		return null;
 	}
+	
+	@Override
+	public Product saveProduct(Product product) {
+		// TODO Auto-generated method stub
+		return productRepository.save(product);
+	}
+
+	@Override
+	public void deleteProduct(Integer productId) {
+		productRepository.deleteById(productId);
+		
+	}
+	
 
 	
 }
