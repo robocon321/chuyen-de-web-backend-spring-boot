@@ -1,4 +1,4 @@
-package com.robocon321.demo.service.impl;
+package com.robocon321.demo.service.user.impl;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ import com.robocon321.demo.repository.UserAccountRepository;
 import com.robocon321.demo.repository.UserRepository;
 import com.robocon321.demo.repository.UserRoleRepository;
 import com.robocon321.demo.repository.UserSocialRepository;
-import com.robocon321.demo.service.AuthService;
+import com.robocon321.demo.service.user.AuthService;
 
 @Service
 public class AuthServiceImpl implements AuthService {

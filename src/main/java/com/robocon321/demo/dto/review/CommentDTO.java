@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.user.UserDTO;
-import com.robocon321.demo.entity.post.Post;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class CommentDTO {
 	private Integer id;
 	private String content;
-	private CommentDTO parentComment;
-	private Post post;
+	private CommentDTO parent;
+	private PostDTO post;
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;

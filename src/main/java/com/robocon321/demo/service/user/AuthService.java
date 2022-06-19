@@ -1,4 +1,4 @@
-package com.robocon321.demo.service;
+package com.robocon321.demo.service.user;
 
 import com.robocon321.demo.dto.user.UserAccountDTO;
 import com.robocon321.demo.dto.user.UserDTO;

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.robocon321.demo.domain.ResponseObjectDomain;
+import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.dto.post.product.ProductDTO;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.service.post.ProductService;
@@ -38,8 +38,12 @@ public class ProductController {
 		String search = "";
 		String sort = "";
 		Integer page = 0;
-		Integer size = 9;
-		ResponseObjectDomain response = new ResponseObjectDomain<>();
+// 		Integer size = 9;
+// 		ResponseObjectDomain response = new ResponseObjectDomain<>();
+    
+		Integer size = 10;
+		ResponseObject response = new ResponseObject<>();
+
 		
 		if(request.containsKey("search")) {
 			search = request.get("search");
