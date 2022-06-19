@@ -109,14 +109,19 @@ public class AuthController {
 	public ResponseEntity loadUser() {
 		ResponseObject response = new ResponseObject<>();
 		try {
-			UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			response.setData(obj);
-			response.setSuccess(true);
+			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+				response.setSuccess(false);
+				response.setMessage("Not login or not exists your user");
+			} else {
+				UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				response.setData(obj);				
+				response.setSuccess(true);
+			}
 			response.setMessage("Successfull!");
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.setMessage(e.getMessage());
+			response.setMessage("Load user fail!");
 			response.setSuccess(false);
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}

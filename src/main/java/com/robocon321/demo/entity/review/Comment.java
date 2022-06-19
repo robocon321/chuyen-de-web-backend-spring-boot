@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.checkout.PaymentMethod;
 import com.robocon321.demo.entity.post.Post;
@@ -45,7 +47,7 @@ public class Comment {
 	@JsonIgnore
 	private Post post;
 	
-	@Column(nullable = false, columnDefinition = "DEFAULT 1")	
+	@Column(nullable = false)
 	private Integer status;
 		
 	@ManyToOne(targetEntity = User.class)
@@ -53,9 +55,7 @@ public class Comment {
 	@JsonIgnore
 	private User modifiedUser;
 	
-	@Column(name = "mod_time", 
-			nullable = false, 
-			columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "mod_time")
 	private Date modifiedTime;
 	
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parent")
