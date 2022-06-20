@@ -9,16 +9,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.post.product.ProductDTO;
 import com.robocon321.demo.dto.user.UserDTO;
+import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.repository.ProductRepository;
-import com.robocon321.demo.service.post.ProductService;	
+import com.robocon321.demo.service.post.ProductService;
+import com.robocon321.demo.specs.ProductSpecification;
+import com.robocon321.demo.type.FilterOperate;	
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -28,6 +33,65 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Page<ProductDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter) {
+		Specification<Product> spec = ProductSpecification.filter(new FilterCriteria("post.title", FilterOperate.LIKE, search));
+		
+		for(Map.Entry<String, String> entry : filter.entrySet()) {
+			String keyEntry = entry.getKey();
+			String valueEntry = entry.getValue();
+			
+			if(keyEntry.startsWith("OR")) {
+				String field = keyEntry.substring(3);
+				String[] arrValue = valueEntry.split("%2C");
+				for(String value : arrValue) {
+					Specification<Product> specType;
+					if(field.equals("taxomony")) {
+						try {
+							specType = ProductSpecification.filterByTaxomonyId(Integer.parseInt(value));							
+						} catch (Exception e) {
+							specType = ProductSpecification.filterByTaxomonyId(0);
+							e.printStackTrace();
+						}
+					}
+					else specType = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					if(spec == null) {
+						spec = specType;
+					} else {
+						spec = spec.or(specType);
+					}
+				}
+			} else if(keyEntry.startsWith("BT")) {
+				String field = keyEntry.substring(8);
+				String[] arrValue = valueEntry.split("%2C");
+				if(arrValue.length == 2) {
+					Specification<Product> specTypeGreater = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
+					Specification<Product> specTypeLess = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					spec = specTypeGreater.and(specTypeLess);
+				}
+			}
+			
+			else if(keyEntry.startsWith("AND")){
+				String field = keyEntry.substring(4);
+				String[] arrValue = valueEntry.split("%2C");
+				for(String value : arrValue) {
+					Specification<Product> specType;
+					if(field.equals("taxomony")) {
+						try {
+							specType = ProductSpecification.filterByTaxomonyId(Integer.parseInt(value));							
+						} catch (Exception e) {
+							specType = ProductSpecification.filterByTaxomonyId(0);
+							e.printStackTrace();
+						}
+					}
+					else specType = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					if(spec == null) {
+						spec = specType;
+					} else {
+						spec = spec.and(specType);
+					}
+				}				
+			}
+		}
+		
 		String arrSort[] = sort.split("__");
 		String sortName;
 		String sortType;
@@ -39,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
 			sortType = "ASC";
 		}
 		
-		Page<Product> pageResponse = productRepository.findByPost_TitleContaining(search, PageRequest.of(page, size, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending()));
+		Page<Product> pageResponse = productRepository.findAll(spec, PageRequest.of(page, size, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending()));
 		return convertPageSummary(pageResponse);
 	}
 

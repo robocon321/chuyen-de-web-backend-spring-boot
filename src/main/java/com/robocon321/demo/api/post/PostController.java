@@ -103,7 +103,7 @@ public class PostController {
 		postService.deletePost(proPostId);
 		return ResponseEntity.ok().build();
 
-
+	}
 	@GetMapping("/{slug}")
 	public ResponseEntity get(@PathVariable String slug) {
 		ResponseObject obj = new ResponseObject<>();

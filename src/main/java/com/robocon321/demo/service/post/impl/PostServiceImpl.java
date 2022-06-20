@@ -20,7 +20,7 @@ import com.robocon321.demo.entity.post.Post;
 
 import com.robocon321.demo.entity.post.product.Product;
 
-import com.robocon321.demo.entity.review.Comment
+import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.repository.PostRepository;
 import com.robocon321.demo.service.post.PostService;
 import com.robocon321.demo.specs.PostSpecification;
@@ -103,7 +103,7 @@ public class PostServiceImpl implements PostService {
 			sortName = "id";
 			sortType = "ASC";
 		}
-
+	
 		Page<Post> pageResponse = postRepository.findAll(spec, PageRequest.of(page, size, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending()));
 		return convertPageSummary(pageResponse);
 	}
