@@ -16,11 +16,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.ManyToAny;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.checkout.CartItem;
 import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.entity.taxomony.TaxomonyObj;
 import com.robocon321.demo.entity.user.User;
 
@@ -82,4 +85,14 @@ public class Product implements TaxomonyObj {
 	)
 	@JsonIgnore
 	private List<User> users;
+	
+//	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "post")
+//	@JsonIgnore
+//	private Product product;
+	
+	@ManyToAny(metaDef = "taxomony_obj", metaColumn = @Column(name = "type"))
+	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST })
+	@JoinTable(name = "taxomony_relationship", joinColumns = @JoinColumn(name = "object_id"), inverseJoinColumns = @JoinColumn(name = "taxomony_id"))
+	private List<Taxomony> taxomonies;
+	
 }
