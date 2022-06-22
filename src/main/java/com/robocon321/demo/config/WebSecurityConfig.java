@@ -14,12 +14,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import com.robocon321.demo.filter.JwtAuthenticationFilter;
-import com.robocon321.demo.service.user.impl.UserService;
+import com.robocon321.demo.service.user.impl.CustomUserDetailService;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
-	UserService userService;
+	CustomUserDetailService userService;
 	
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {

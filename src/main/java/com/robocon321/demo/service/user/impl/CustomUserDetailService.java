@@ -11,7 +11,7 @@ import com.robocon321.demo.entity.user.UserAccount;
 import com.robocon321.demo.repository.UserAccountRepository;
 
 @Service
-public class UserService implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
 	@Autowired
 	private UserAccountRepository userAccountRepository;
 

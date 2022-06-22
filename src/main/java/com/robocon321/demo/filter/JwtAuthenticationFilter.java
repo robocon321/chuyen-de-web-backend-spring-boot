@@ -19,7 +19,7 @@ import com.robocon321.demo.domain.CustomUserDetails;
 import com.robocon321.demo.dto.user.RoleDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.user.User;
-import com.robocon321.demo.service.user.impl.UserService;
+import com.robocon321.demo.service.user.impl.CustomUserDetailService;
 import com.robocon321.demo.token.JwtTokenProvider;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private JwtTokenProvider tokenProvider;
 	
 	@Autowired
-	private UserService userService;
+	private CustomUserDetailService userService;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

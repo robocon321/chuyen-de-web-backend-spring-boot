@@ -50,6 +50,7 @@ public class AuthController {
 				message += error.getDefaultMessage() + ". ";
 			}
 			response.setMessage(message.trim());
+			response.setSuccess(false);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		} else {
 			try {
@@ -71,6 +72,7 @@ public class AuthController {
 			} catch (Exception e) {
 				e.printStackTrace();
 				response.setMessage(e.getMessage());
+				response.setSuccess(false);				
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 			}
 
@@ -87,6 +89,7 @@ public class AuthController {
 				message += error.getDefaultMessage() + ". ";
 			}
 			response.setMessage(message.trim());
+			response.setSuccess(false);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		} else {
 			try {
@@ -99,6 +102,7 @@ public class AuthController {
 
 			} catch (Exception e) {
 				response.setMessage(e.getMessage());
+				response.setSuccess(false);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 			}
 

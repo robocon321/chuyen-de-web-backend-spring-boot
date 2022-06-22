@@ -1,0 +1,5 @@
+- Sử dụng machine learning để thống kê sản phẩm tiềm năng, phân tích RS
+- Dùng code điện thoại, gởi mail để xác thực thông tin
+- Đa ngôn ngữ
+- Voucher, thông tin khuyến mãi tới khách hàng
+- Giờ vàng
