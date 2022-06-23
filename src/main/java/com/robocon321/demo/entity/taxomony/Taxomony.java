@@ -70,6 +70,9 @@ public class Taxomony implements ViewObj{
 	@Formula("(select count(*) from taxomony_relationship tr where tr.taxomony_id = id)")
 	private Integer totalPost;
 	
+	@Formula("(select count(*) from taxomony_relationship tr where tr.taxomony_id = id)")
+	private Integer totalProduct;
+	
 	@OneToMany(mappedBy = "taxomony", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<TaxomonyMeta> metas;

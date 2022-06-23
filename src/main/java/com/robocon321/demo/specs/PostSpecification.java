@@ -14,7 +14,6 @@ public class PostSpecification {
 			if (criteria == null) {
 				return null;
 			}
-
 			switch (criteria.getOperator()) {
 			case GREATER:
 				return builder.greaterThanOrEqualTo(root.<String>get(criteria.getField()),
