@@ -116,13 +116,14 @@ public class AuthController {
 			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
 				response.setSuccess(false);
 				response.setMessage("Not login or not exists your user");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			} else {
 				UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				response.setData(obj);				
 				response.setSuccess(true);
+				response.setMessage("Successfull!");
+				return ResponseEntity.ok(response);
 			}
-			response.setMessage("Successfull!");
-			return ResponseEntity.ok(response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.setMessage("Load user fail!");

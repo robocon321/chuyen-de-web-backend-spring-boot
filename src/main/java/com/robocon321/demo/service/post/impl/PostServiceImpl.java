@@ -17,6 +17,7 @@ import com.robocon321.demo.dto.review.CommentDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.review.Comment;
+import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.repository.PostRepository;
 import com.robocon321.demo.service.post.PostService;
 import com.robocon321.demo.specs.PostSpecification;
@@ -111,9 +112,12 @@ public class PostServiceImpl implements PostService {
 		    	PostDTO postDTO = new PostDTO();
 		    	BeanUtils.copyProperties(post, postDTO);
 		    	
-		    	UserDTO userDTO = new UserDTO();
-		    	BeanUtils.copyProperties(post.getModifiedUser(), userDTO);
-		    	postDTO.setModifiedUser(userDTO);
+		    	User userMod = post.getModifiedUser();
+		    	if(userMod != null) {
+			    	UserDTO userDTO = new UserDTO();
+			    	BeanUtils.copyProperties(userMod, userDTO);
+			    	postDTO.setModifiedUser(userDTO);
+		    	}
 		    	
 		    	return postDTO;
 		    }
