@@ -59,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "token"));
         config.addAllowedMethod("*");
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
         http.authorizeRequests().antMatchers("/**").permitAll().anyRequest()

@@ -20,6 +20,7 @@ import com.robocon321.demo.dto.post.product.ProductDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.post.product.Product;
+import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.repository.ProductRepository;
 import com.robocon321.demo.service.post.ProductService;
 import com.robocon321.demo.specs.ProductSpecification;
@@ -118,9 +119,12 @@ public class ProductServiceImpl implements ProductService {
 		    	BeanUtils.copyProperties(product.getPost(), postDTO);
 		    	productDTO.setPost(postDTO);
 		    	
-		    	UserDTO userDTO = new UserDTO();
-		    	BeanUtils.copyProperties(product.getPost().getModifiedUser(), userDTO);
-		    	productDTO.getPost().setModifiedUser(userDTO);
+		    	User userMod = product.getPost().getModifiedUser();
+		    	if(userMod != null) {
+			    	UserDTO userDTO = new UserDTO();
+			    	BeanUtils.copyProperties(userMod, userDTO);
+			    	productDTO.getPost().setModifiedUser(userDTO);
+		    	}
 		    	
 		    	return productDTO;
 		    }
