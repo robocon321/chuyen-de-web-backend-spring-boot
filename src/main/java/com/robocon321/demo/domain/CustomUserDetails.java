@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
 				grantAuthorities.add(grant);
 			});			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 		
 		return grantAuthorities;

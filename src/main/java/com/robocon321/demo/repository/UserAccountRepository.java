@@ -9,5 +9,5 @@ import com.robocon321.demo.entity.user.UserAccount;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Integer>{
 	UserAccount findByUser_id(int id);
 	UserAccount findByUsername(String username);
-	boolean existsByUsername(String username);
+	boolean existsByUsername(String username);	
 }

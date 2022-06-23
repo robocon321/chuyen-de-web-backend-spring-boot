@@ -40,7 +40,6 @@ public class AuthServiceImpl implements AuthService {
 	@Autowired
 	private UserSocialRepository userSocialRepository;
 
-	private ModelMapper mapper = new ModelMapper();
 
 	boolean hasUname(String uname) {
 		return userAccountRepository.existsByUsername(uname);

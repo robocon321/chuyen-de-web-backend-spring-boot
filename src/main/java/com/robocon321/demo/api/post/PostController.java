@@ -59,6 +59,8 @@ public class PostController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setSuccess(false);			
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
 
 		try {
@@ -72,6 +74,8 @@ public class PostController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
 
 		Page<PostDTO> pageResponse = postService.getPage(search, size, page, sort, request);
@@ -106,14 +110,15 @@ public class PostController {
 	}
 	@GetMapping("/{slug}")
 	public ResponseEntity get(@PathVariable String slug) {
-		ResponseObject obj = new ResponseObject<>();
+		ResponseObject response = new ResponseObject<>();
 		try {
-			obj.setData(postService.getDetailPostBySlug(slug));
-			obj.setSuccess(true);
+			response.setData(postService.getDetailPostBySlug(slug));
+			response.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
-		return ResponseEntity.ok(obj);
-
+		return ResponseEntity.ok(response);
 	}
 }

@@ -65,6 +65,12 @@ public class User {
 			length = 200)
 	private String avatar;
 	
+	@Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+	private Boolean sex;
+	
+	@Column(columnDefinition = "DATETIME")
+	private Date birthday;
+	
 	@Column(name = "status",
 			columnDefinition = "INT DEFAULT 1")
 	private Integer status;
