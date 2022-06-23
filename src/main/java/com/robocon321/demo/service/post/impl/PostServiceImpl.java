@@ -1,5 +1,6 @@
 package com.robocon321.demo.service.post.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,6 +17,9 @@ import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.review.CommentDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
+
+import com.robocon321.demo.entity.post.product.Product;
+
 import com.robocon321.demo.entity.review.Comment;
 import com.robocon321.demo.repository.PostRepository;
 import com.robocon321.demo.service.post.PostService;
@@ -99,7 +103,7 @@ public class PostServiceImpl implements PostService {
 			sortName = "id";
 			sortType = "ASC";
 		}
-
+	
 		Page<Post> pageResponse = postRepository.findAll(spec, PageRequest.of(page, size, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending()));
 		return convertPageSummary(pageResponse);
 	}
@@ -118,6 +122,30 @@ public class PostServiceImpl implements PostService {
 		    	return postDTO;
 		    }
 		});	
+	}
+	@Override
+	public Post findBySlug(String slug) {
+		List<Post> list = postRepository.findAll();
+		for(Post post:list) {
+			if(post.getSlug().equals(slug)) {
+				
+				return post;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Post savePost(Post post) {
+		// TODO Auto-generated method stub
+		return postRepository.save(post);
+	}
+
+	@Override
+	public void deletePost(Integer postId) {
+		// TODO Auto-generated method stub
+		postRepository.deleteById(postId);
+		
 	}
 
 	@Override
