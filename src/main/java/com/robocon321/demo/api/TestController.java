@@ -17,31 +17,4 @@ import com.robocon321.demo.service.post.PostService;
 @RestController
 @RequestMapping("/test")
 public class TestController {	
-	@Autowired
-	private PostService postRepository;
-	
-	@GetMapping("/{slug}")
-	public ResponseEntity b(@PathVariable String slug) {
-		
-		ResponseObject obj = new ResponseObject<>();
-		try {
-			obj.setData(postRepository.getDetailPostBySlug(slug));
-			obj.setSuccess(true);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return ResponseEntity.ok(obj);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity a(@PathVariable Integer id) {
-		ResponseObject obj = new ResponseObject<>();
-		try {
-//			postRepository.deleteById(id);
-			obj.setSuccess(true);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return ResponseEntity.ok(obj);
-	}
 }
