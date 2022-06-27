@@ -67,6 +67,9 @@ public class Post implements ViewObj, TaxomonyObj {
 	@Column(nullable = false)
 	private String slug;
 
+	@Column(nullable = false)
+	private String type;
+	
 	@Column(name = "meta_title")
 	private String metaTitle;
 
