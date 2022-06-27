@@ -1,1 +1,2 @@
 - modUser product chưa kiếm tra
+- chọn tỉnh ở giao diện chưa hợp lí
