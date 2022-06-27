@@ -1,18 +1,22 @@
 package com.robocon321.demo.service.common.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.common.ContactDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.common.Contact;
+import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.repository.ContactRepository;
 import com.robocon321.demo.service.common.ContactService;
 import com.robocon321.demo.specs.ContactSpecification;
@@ -24,7 +28,7 @@ public class ContactServiceImpl implements ContactService {
 	private ContactRepository contactRepository;
 	
 	@Override
-	public List<ContactDTO> getAll(Map<String, String> filter) {
+	public List<ContactDTO> getAll(Map<String, String> filter, String sort) {
 		Specification<Contact> spec = null;	
 
 		for(Map.Entry<String, String> entry : filter.entrySet()) {
@@ -66,8 +70,19 @@ public class ContactServiceImpl implements ContactService {
 			}
 		}
 
+		String arrSort[] = sort.split("__");
+		String sortName;
+		String sortType;
+		if(arrSort.length == 2) {
+			sortName = arrSort[0];
+			sortType = arrSort[1];						
+		} else {
+			sortName = "id";
+			sortType = "ASC";
+		}
+
 		List<ContactDTO> contactDTOs = new ArrayList<ContactDTO>();
-		List<Contact> contacts = contactRepository.findAll(spec);
+		List<Contact> contacts = contactRepository.findAll(spec, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending());
 		for(Contact contact : contacts) {
 			ContactDTO dto = new ContactDTO();
 			BeanUtils.copyProperties(contact, dto);
@@ -80,6 +95,75 @@ public class ContactServiceImpl implements ContactService {
 		}
 		
 		return contactDTOs;
+	}
+
+	@Override
+	public List<ContactDTO> insert(List<ContactDTO> contactDTOs) throws RuntimeException {
+		List<Contact> contacts = new ArrayList<Contact>();
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+			throw new RuntimeException("Your session invalid");
+		} else {
+			UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = new User();
+			BeanUtils.copyProperties(userDTO, user);
+			
+			for(ContactDTO contactDTO: contactDTOs) {
+				Contact contact = new Contact();	
+				BeanUtils.copyProperties(contactDTO, contact);
+				contact.setStatus(1);
+				contact.setModifiedUser(user);
+				contact.setModifiedTime(new Date());
+				contacts.add(contact);
+			}
+			
+			contacts = contactRepository.saveAll(contacts);
+			
+			List<ContactDTO> result = new ArrayList<>();
+			
+			for(Contact contact : contacts) {
+				ContactDTO contactDTO = new ContactDTO();
+				BeanUtils.copyProperties(contact, contactDTO);
+				result.add(contactDTO);
+			}
+			
+			return result;
+		}
+	}
+
+	@Override
+	public List<ContactDTO> update(List<ContactDTO> contactDTOs) throws RuntimeException {
+		List<Contact> contacts = new ArrayList<Contact>();
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+			throw new RuntimeException("Your session invalid");
+		} else {
+			UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = new User();
+			BeanUtils.copyProperties(userDTO, user);
+			
+			for(ContactDTO contactDTO: contactDTOs) {
+				if(contactDTO.getId() == null) {
+					throw new RuntimeException("Your contact invalid");
+				} else {
+					Contact contact = new Contact();
+					BeanUtils.copyProperties(contactDTO, contact);
+					contact.setStatus(1);
+					contact.setModifiedUser(user);
+					contact.setModifiedTime(new Date());
+					contacts.add(contact);
+				}
+			}
+			
+			contacts = contactRepository.saveAll(contacts);			
+			
+			List<ContactDTO> result = new ArrayList<>();
+			for(Contact contact : contacts) {
+				ContactDTO contactDTO = new ContactDTO();
+				BeanUtils.copyProperties(contact, contactDTO);
+				result.add(contactDTO);
+			}
+			
+			return result;
+		}
 	}
 
 }

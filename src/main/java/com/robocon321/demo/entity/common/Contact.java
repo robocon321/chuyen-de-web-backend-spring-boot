@@ -40,13 +40,13 @@ public class Contact {
 	private String phone;
 	
 	@Column(nullable = false)
-	private Integer province;
+	private String province;
 	
 	@Column(nullable = false)
-	private Integer district;
+	private String district;
 	
 	@Column(nullable = false)
-	private Integer ward;
+	private String ward;
 	
 	@Column(name="detail_address" ,nullable = false)
 	private String detailAddress;

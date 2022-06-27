@@ -2,6 +2,9 @@ package com.robocon321.demo.dto.common;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.robocon321.demo.dto.user.UserDTO;
 
 import lombok.AllArgsConstructor;
@@ -13,12 +16,30 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ContactDTO {
 	private Integer id;
+	@NotBlank
+	@NotNull
 	private String fullname;
+	
+	@NotBlank
+	@NotNull
 	private String phone;
-	private Integer province;
-	private Integer district;
-	private Integer ward;
+
+	@NotBlank
+	@NotNull
+	private String province;
+
+	@NotBlank
+	@NotNull
+	private String district;
+
+	@NotBlank
+	@NotNull
+	private String ward;
+
+	@NotBlank
+	@NotNull
 	private String detailAddress;
+
 	private Integer priority;
 	private Integer status;
 	private UserDTO modifiedUser;
