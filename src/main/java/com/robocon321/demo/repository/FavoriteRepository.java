@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.common.Favorite;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecificationExecutor<Post> {
-	Post findOneBySlug(String slug);
+public interface FavoriteRepository extends JpaRepository<Favorite, Integer>, JpaSpecificationExecutor<Favorite>{
+
 }

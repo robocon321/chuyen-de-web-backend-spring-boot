@@ -101,14 +101,7 @@ public class User {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
 	@JsonIgnore
 	private UserAccount userAccount;
-	
-	@ManyToMany(cascade = CascadeType.PERSIST)
-	@JoinTable(name = "wishlist",
-				joinColumns = @JoinColumn(name = "user_id"),
-				inverseJoinColumns = @JoinColumn(name = "product_id"))
-	@JsonIgnore
-	private List<Product> wishlist;	
-	
+		
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "modifiedUser")
 	@JsonIgnore
 	private List<Cart> carts;
@@ -116,5 +109,4 @@ public class User {
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "modifiedUser")
 	@JsonIgnore
 	private List<Post> posts;
-
 }

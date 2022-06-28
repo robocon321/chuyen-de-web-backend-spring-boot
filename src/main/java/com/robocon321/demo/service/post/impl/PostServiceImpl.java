@@ -45,16 +45,7 @@ public class PostServiceImpl implements PostService {
 				String field = keyEntry.substring(3);
 				String[] arrValue = valueEntry.split("%2C");
 				for(String value : arrValue) {
-					Specification<Post> specType;
-					if(field.equals("taxomony")) {
-						try {
-							specType = PostSpecification.filterByTaxomonyId(Integer.parseInt(value));							
-						} catch (Exception e) {
-							specType = PostSpecification.filterByTaxomonyId(0);
-							e.printStackTrace();
-						}
-					}
-					else specType = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					Specification<Post> specType  = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
 					if(spec == null) {
 						spec = specType;
 					} else {
@@ -75,16 +66,7 @@ public class PostServiceImpl implements PostService {
 				String field = keyEntry.substring(4);
 				String[] arrValue = valueEntry.split("%2C");
 				for(String value : arrValue) {
-					Specification<Post> specType;
-					if(field.equals("taxomony")) {
-						try {
-							specType = PostSpecification.filterByTaxomonyId(Integer.parseInt(value));							
-						} catch (Exception e) {
-							specType = PostSpecification.filterByTaxomonyId(0);
-							e.printStackTrace();
-						}
-					}
-					else specType = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					Specification<Post> specType = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
 					if(spec == null) {
 						spec = specType;
 					} else {
@@ -106,27 +88,32 @@ public class PostServiceImpl implements PostService {
 		}
 	
 		Page<Post> pageResponse = postRepository.findAll(spec, PageRequest.of(page, size, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending()));
-		return convertPageSummary(pageResponse);
+		return convertPageEntityToDTO(pageResponse);
 	}
 
-	private Page<PostDTO> convertPageSummary(Page<Post> page) {
-		return page.map(new Function<Post, PostDTO>() {
-		    @Override
-		    public PostDTO apply(Post post) {
-		    	PostDTO postDTO = new PostDTO();
-		    	BeanUtils.copyProperties(post, postDTO);
-		    	
-		    	User userMod = post.getModifiedUser();
-		    	if(userMod != null) {
-			    	UserDTO userDTO = new UserDTO();
-			    	BeanUtils.copyProperties(userMod, userDTO);
-			    	postDTO.setModifiedUser(userDTO);
-		    	}
-		    	
-		    	return postDTO;
-		    }
-		});	
+	private Page<PostDTO> convertPageEntityToDTO(Page<Post> page) {
+		return page.map(post -> convertEntityToDTO(post));	
 	}
+	
+	private List<PostDTO> convertListEntityToDTO(List<Post> posts) {
+		return posts.stream().map(post -> convertEntityToDTO(post)).toList();
+	}
+	
+	private PostDTO convertEntityToDTO(Post post) {
+    	PostDTO postDTO = new PostDTO();
+    	BeanUtils.copyProperties(post, postDTO);
+    	
+    	User userMod = post.getModifiedUser();
+    	if(userMod != null) {
+	    	UserDTO userDTO = new UserDTO();
+	    	BeanUtils.copyProperties(userMod, userDTO);
+	    	postDTO.setModifiedUser(userDTO);
+    	}
+    	
+    	return postDTO;
+	}
+	
+	
 	@Override
 	public Post findBySlug(String slug) {
 		List<Post> list = postRepository.findAll();
@@ -165,6 +152,64 @@ public class PostServiceImpl implements PostService {
 		
 		
 		return postDTO;
+	}
+
+	@Override
+	public List<PostDTO> getAll(String search, String sort, Map<String, String> filter) {
+		Specification<Post> spec = PostSpecification.filter(new FilterCriteria("title", FilterOperate.LIKE, search));
+
+		for(Map.Entry<String, String> entry : filter.entrySet()) {
+			String keyEntry = entry.getKey();
+			String valueEntry = entry.getValue();
+			
+			if(keyEntry.startsWith("OR")) {
+				String field = keyEntry.substring(3);
+				String[] arrValue = valueEntry.split("%2C");
+				for(String value : arrValue) {
+					Specification<Post> specType  = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					if(spec == null) {
+						spec = specType;
+					} else {
+						spec = spec.or(specType);
+					}
+				}
+			} else if(keyEntry.startsWith("BT")) {
+				String field = keyEntry.substring(8);
+				String[] arrValue = valueEntry.split("%2C");
+				if(arrValue.length == 2) {
+					Specification<Post> specTypeGreater = PostSpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
+					Specification<Post> specTypeLess = PostSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					spec = specTypeGreater.and(specTypeLess);
+				}
+			}
+			
+			else if(keyEntry.startsWith("AND")){
+				String field = keyEntry.substring(4);
+				String[] arrValue = valueEntry.split("%2C");
+				for(String value : arrValue) {
+					Specification<Post> specType = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
+					if(spec == null) {
+						spec = specType;
+					} else {
+						spec = spec.and(specType);
+					}
+				}				
+			}
+		}
+		
+		String arrSort[] = sort.split("__");
+		String sortName;
+		String sortType;
+		if(arrSort.length == 2) {
+			sortName = arrSort[0];
+			sortType = arrSort[1];						
+		} else {
+			sortName = "id";
+			sortType = "ASC";
+		}
+	
+		List<Post> pageResponse = postRepository.findAll(spec, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending());
+		return convertListEntityToDTO(pageResponse);
 	}
 
 
