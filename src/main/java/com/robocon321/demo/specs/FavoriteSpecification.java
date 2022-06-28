@@ -5,13 +5,10 @@ import javax.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.robocon321.demo.domain.FilterCriteria;
-import com.robocon321.demo.entity.post.Post;
-import com.robocon321.demo.entity.review.Comment;
-import com.robocon321.demo.entity.taxomony.Taxomony;
-import com.robocon321.demo.entity.user.User;
+import com.robocon321.demo.entity.common.Favorite;
 
-public class PostSpecification {
-	public static Specification<Post> filter(FilterCriteria criteria) {
+public class FavoriteSpecification {
+	public static Specification<Favorite> filter(FilterCriteria criteria) {
 		return (root, query, builder) -> {
 			if (criteria == null) {
 				return null;

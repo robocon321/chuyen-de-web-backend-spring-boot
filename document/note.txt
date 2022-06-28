@@ -1,2 +1,8 @@
 - modUser product chưa kiếm tra
 - chọn tỉnh ở giao diện chưa hợp lí
+
+- Trình bày (có thể sử dụng video chuẩn bị sẵn để báo cáo): 
++ Giới thiệu bài toán
++ Các kĩ thuật đã dùng
++ Bảng phân công
++ Demo

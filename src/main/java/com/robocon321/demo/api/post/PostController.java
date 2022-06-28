@@ -2,6 +2,7 @@ package com.robocon321.demo.api.post;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.dto.post.PostDTO;
+import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.service.post.PostService;
@@ -85,13 +88,7 @@ public class PostController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-
-// 	@GetMapping("/{slug}")
-// 	public ResponseEntity<Post> findBySlug(@PathVariable String slug){
-// 		Post post = postService.findBySlug(slug);
-// 		System.out.println(post);
-// 		return ResponseEntity.ok().body(post);
-// 	}
+	
 	@PostMapping("")
 	public ResponseEntity<Post> createPost(@Valid @RequestBody Post post) throws URISyntaxException {
 		Post newPost = postService.savePost(post);
