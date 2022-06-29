@@ -1,5 +1,6 @@
 package com.robocon321.demo.service.common.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,8 +9,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,10 @@ import com.robocon321.demo.dto.common.FavoriteDTO;
 import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.common.Favorite;
+import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.repository.FavoriteRepository;
+import com.robocon321.demo.repository.PostRepository;
 import com.robocon321.demo.repository.UserRepository;
 import com.robocon321.demo.service.common.FavoriteService;
 import com.robocon321.demo.specs.FavoriteSpecification;
@@ -32,6 +33,9 @@ public class FavoriteServiceImpl implements FavoriteService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PostRepository postRepository;
 
 	@Override
 	public List<FavoriteDTO> getAll(String sort, Map<String, String> filter) {
@@ -122,7 +126,41 @@ public class FavoriteServiceImpl implements FavoriteService {
 				favoriteRepository.deleteAllById(ids);
 			}
 		} catch(Exception ex) {
-			throw new RuntimeException("Your session is invalid");			
+			ex.printStackTrace();
+			throw new RuntimeException("Your session is invalid");
 		}
 	}
+
+	@Override
+	public List<FavoriteDTO> add(List<Integer> ids) throws RuntimeException {
+		try {
+			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+				throw new RuntimeException("Your session not found");
+			} else {
+				Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				Optional<User> optional = userRepository.findById(userDTO.getId());
+				if(optional.isPresent()) {
+					List<Favorite> favorites = new ArrayList<>();
+					for(Integer id: ids) {
+						Optional<Post>  postOpt = postRepository.findById(id);
+						if(postOpt.isPresent()) {
+							Favorite favorite = new Favorite();
+							favorite.setPost(postOpt.get());
+							favorite.setUser(optional.get());
+							favorites.add(favorite);
+						} else {
+							throw new RuntimeException("Your post not found");
+						}
+					}
+					favorites = favoriteRepository.saveAll(favorites);
+					return convertListEntityToDTO(favorites);
+					
+				} else throw new RuntimeException("Your session not found");				
+			}
+		} catch(Exception ex) {
+			throw new RuntimeException("Your session is invalid");			
+		}		
+	}
+	
 }
