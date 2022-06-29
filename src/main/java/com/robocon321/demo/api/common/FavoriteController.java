@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,6 +68,24 @@ public class FavoriteController {
 			favoriteService.delete(ids);
 			response.setMessage("Successful!");
 			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		} catch(Exception ex) {
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			
+		}
+	}
+
+	@PostMapping("")
+	public ResponseEntity add(@RequestBody List<Integer> ids) {
+		ResponseObject response = new ResponseObject<>();
+		try {
+			List<FavoriteDTO> favoriteDTOs = favoriteService.add(ids);
+			response.setData(favoriteDTOs);
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			response.setMessage(ex.getMessage());
@@ -74,6 +93,5 @@ public class FavoriteController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			
 		}
-		return null;
 	}
 }
