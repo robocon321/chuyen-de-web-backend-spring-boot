@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 				String[] arrValue = valueEntry.split("%2C");
 				if(arrValue.length == 2) {
 					Specification<Product> specTypeGreater = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
-					Specification<Product> specTypeLess = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					Specification<Product> specTypeLess = ProductSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[1]));
 					spec = specTypeGreater.and(specTypeLess);
 				}
 			}
@@ -156,6 +156,12 @@ public class ProductServiceImpl implements ProductService {
 	public void deleteProduct(Integer productId) {
 		productRepository.deleteById(productId);
 		
+	}
+
+	@Override
+	public ProductDTO add(ProductDTO product) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 
