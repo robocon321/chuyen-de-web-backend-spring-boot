@@ -23,7 +23,7 @@ public class ProductSpecification {
 				String table = splitField[0];
 				String field = splitField[1];
 				
-				Join< Post,Product> postJoin = root.join(table);
+				Join<Post,Product> postJoin = root.join(table);
 				
 				switch (criteria.getOperator()) {
 				case GREATER:
