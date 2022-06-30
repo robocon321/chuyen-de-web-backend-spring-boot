@@ -77,14 +77,6 @@ public class Product implements TaxomonyObj {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
 	@JsonIgnore
 	private List<Attribute> attributes;
-
-	@ManyToMany
-	@JoinTable(name = "wishlist",
-		joinColumns = @JoinColumn(name = "product_id"),
-		inverseJoinColumns = @JoinColumn(name = "user_id")
-	)
-	@JsonIgnore
-	private List<User> users;
 	
 //	@OneToOne(cascade = CascadeType.REMOVE, mappedBy = "post")
 //	@JsonIgnore
