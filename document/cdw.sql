@@ -298,6 +298,22 @@ CREATE TABLE `view` (
     FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `feedback` (
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	fullname VARCHAR(100) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    subject VARCHAR(200) NOT NULL,
+    message TEXT NOT NULL,
+    mod_time DATETIME NOT NULL,
+    status INT DEFAULT 1,
+    user_id INT
+);
+
+ALTER TABLE `feedback`
+ADD FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE SET NULL ON UPDATE CASCADE;
+
+
+
 
 
 
