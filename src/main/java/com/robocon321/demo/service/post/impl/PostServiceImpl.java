@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.robocon321.demo.domain.FilterCriteria;
@@ -44,21 +45,23 @@ public class PostServiceImpl implements PostService {
 			if(keyEntry.startsWith("OR")) {
 				String field = keyEntry.substring(3);
 				String[] arrValue = valueEntry.split("%2C");
-				for(String value : arrValue) {
+				for(int i = 0 ; i < arrValue.length ; i ++) {
+					String value = arrValue[i];
 					Specification<Post> specType  = PostSpecification.filter(new FilterCriteria(field, FilterOperate.EQUALS, value));
 					if(spec == null) {
 						spec = specType;
 					} else {
-						spec = spec.or(specType);
+						if(i == 0) spec = spec.and(specType);
+						else spec = spec.or(specType);
 					}
 				}
 			} else if(keyEntry.startsWith("BT")) {
-				String field = keyEntry.substring(8);
+				String field = keyEntry.substring(3);
 				String[] arrValue = valueEntry.split("%2C");
 				if(arrValue.length == 2) {
 					Specification<Post> specTypeGreater = PostSpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
-					Specification<Post> specTypeLess = PostSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
-					spec = specTypeGreater.and(specTypeLess);
+					Specification<Post> specTypeLess = PostSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[1]));
+					spec = spec.and(specTypeGreater.and(specTypeLess));
 				}
 			}
 			
@@ -133,13 +136,6 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public void deletePost(Integer postId) {
-		// TODO Auto-generated method stub
-		postRepository.deleteById(postId);
-		
-	}
-
-	@Override
 	public PostDTO getDetailPostBySlug(String slug) {
 		PostDTO postDTO = new PostDTO();
 		Post post = postRepository.findOneBySlug(slug);
@@ -210,6 +206,21 @@ public class PostServiceImpl implements PostService {
 	
 		List<Post> pageResponse = postRepository.findAll(spec, sortType.equals("DESC") ? Sort.by(sortName).descending() : Sort.by(sortName).ascending());
 		return convertListEntityToDTO(pageResponse);
+	}
+
+	@Override
+	public void delete(List<Integer> ids) {
+		try {
+			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
+				throw new RuntimeException("Your session not found");
+			} else {
+				UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				postRepository.deleteAllById(ids);
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException("Your session is invalid");
+		}		
 	}
 
 

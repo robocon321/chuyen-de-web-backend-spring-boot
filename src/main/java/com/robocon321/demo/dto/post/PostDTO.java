@@ -30,7 +30,8 @@ public class PostDTO {
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
 	private Double averageRating;
-	private Integer totalComment;	
+	private Integer totalComment;
+	private Integer totalView;
 	private List<PostDTO> posts = new ArrayList<>();
 	private List<CommentDTO> comments = new ArrayList<>();
 }

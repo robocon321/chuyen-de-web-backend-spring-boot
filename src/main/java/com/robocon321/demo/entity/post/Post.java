@@ -84,6 +84,9 @@ public class Post implements ViewObj, TaxomonyObj {
 
 	@Formula("(select ROUND(avg(vote.star), 1) from vote where vote.post_id = id)")
 	private Double averageRating;
+	
+	@Formula("(select count(*) from view where view.type = type and view.object_id = id)")
+	private Integer totalView;
 
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id")
