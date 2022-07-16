@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,6 @@ import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.service.post.PostService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/posts")
@@ -94,17 +93,28 @@ public class PostController {
 		Post newPost = postService.savePost(post);
 		return ResponseEntity.created(new URI("/posts/"+newPost.getId())).body(newPost);
 	}
+	
 	@PutMapping("")
 	public ResponseEntity<Post> updatePost(@Valid @RequestBody Post post){
 		Post newPost = postService.savePost(post);
 		return ResponseEntity.ok().body(newPost);
 	}
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Post> deletePost(@PathVariable Integer proPostId){
-		postService.deletePost(proPostId);
-		return ResponseEntity.ok().build();
-
+	
+	@DeleteMapping("")
+	public ResponseEntity delete(@RequestBody List<Integer> ids) {
+		ResponseObject response = new ResponseObject<>();
+		try {
+			postService.delete(ids);
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		} catch(Exception ex) {
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);			
+		}
 	}
+	
 	@GetMapping("/{slug}")
 	public ResponseEntity get(@PathVariable String slug) {
 		ResponseObject response = new ResponseObject<>();
