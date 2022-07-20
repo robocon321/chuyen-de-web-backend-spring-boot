@@ -1,9 +1,9 @@
-@AnyMetaDef(name = "view_obj", metaType = "string", idType = "integer", metaValues = {
+@AnyMetaDef(name = "view_obj", metaType = "string", idType = "int", metaValues = {
 		@MetaValue(value = "post", targetEntity = Post.class),
 		@MetaValue(value = "taxomony", targetEntity = Taxomony.class) })
 
-@AnyMetaDef(name = "taxomony_obj", metaType = "string", idType = "integer", metaValues = {
-		@MetaValue(value = "blog", targetEntity = Post.class),
+@AnyMetaDef(name = "taxomony_obj", metaType = "string", idType = "int", metaValues = {
+		@MetaValue(value = "post", targetEntity = Post.class),
 		@MetaValue(value = "attribute", targetEntity = Attribute.class),
 		@MetaValue(value = "product", targetEntity =  Product.class)})
 

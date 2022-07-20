@@ -1,7 +1,10 @@
 package com.robocon321.demo.service.post.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.springframework.beans.BeanUtils;
@@ -22,8 +25,11 @@ import com.robocon321.demo.entity.post.Post;
 import com.robocon321.demo.entity.post.product.Product;
 
 import com.robocon321.demo.entity.review.Comment;
+import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.entity.user.User;
 import com.robocon321.demo.repository.PostRepository;
+import com.robocon321.demo.repository.TaxomonyRepository;
+import com.robocon321.demo.repository.UserRepository;
 import com.robocon321.demo.service.post.PostService;
 import com.robocon321.demo.specs.PostSpecification;
 import com.robocon321.demo.type.FilterOperate;	
@@ -33,6 +39,12 @@ public class PostServiceImpl implements PostService {
 	
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private TaxomonyRepository taxomonyRepository;
 
 	@Override
 	public Page<PostDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter) {
@@ -130,9 +142,45 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public Post savePost(Post post) {
-		// TODO Auto-generated method stub
-		return postRepository.save(post);
+	public List<PostDTO> save(List<PostDTO> postDTOs) throws RuntimeException {
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session is not exists");
+		UserDTO userDTO = null;
+		try {
+			userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
+		} catch(Exception ex) {
+			throw new RuntimeException("Your session is invalid");
+		}
+		
+		Optional<User> userOption = userRepository.findById(userDTO.getId());
+		if(userOption.isEmpty()) throw new RuntimeException("Your user not found");
+		User user = userOption.get();
+		List<Post> posts = new ArrayList<>();
+		postDTOs.stream().forEach(postDTO -> {
+			Post post = new Post();
+			BeanUtils.copyProperties(postDTO, post);
+			post.setStatus(1);
+			post.setModifiedUser(user);
+			post.setModifiedTime(new Date());
+			
+			List<Taxomony> taxomonies = new ArrayList<>();
+			
+			postDTO.getTaxomonies().stream().forEach(taxomonyDTO -> {
+				Optional<Taxomony> taxomonyOpt = taxomonyRepository.findById(taxomonyDTO.getId());
+				if(taxomonyOpt.isEmpty()) throw new RuntimeException("Your taxomony not found");
+				else {
+					Taxomony taxomony = taxomonyRepository.findById(taxomonyDTO.getId()).get();
+
+					Post postSaved = postRepository.save(post);
+					posts.add(postSaved);
+
+					taxomony.getObjects().add(postSaved);
+				}
+			});
+			
+			taxomonyRepository.saveAll(taxomonies);
+		});
+				
+		return convertListEntityToDTO(posts);
 	}
 
 	@Override
