@@ -11,11 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.ManyToAny;
@@ -125,5 +127,6 @@ public class Post implements ViewObj, TaxomonyObj {
 	@ManyToAny(metaDef = "taxomony_obj", metaColumn = @Column(name = "type"))
 	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST })
 	@JoinTable(name = "taxomony_relationship", joinColumns = @JoinColumn(name = "object_id"), inverseJoinColumns = @JoinColumn(name = "taxomony_id"))
+	@JsonIgnore
 	private List<Taxomony> taxomonies;
 }

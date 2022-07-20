@@ -1,7 +1,5 @@
 package com.robocon321.demo.api.post;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.dto.post.PostDTO;
-import com.robocon321.demo.dto.user.UserDTO;
-import com.robocon321.demo.entity.post.Post;
-import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.service.post.PostService;
 
 
@@ -88,18 +82,6 @@ public class PostController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@PostMapping("")
-	public ResponseEntity<Post> createPost(@Valid @RequestBody Post post) throws URISyntaxException {
-		Post newPost = postService.savePost(post);
-		return ResponseEntity.created(new URI("/posts/"+newPost.getId())).body(newPost);
-	}
-	
-	@PutMapping("")
-	public ResponseEntity<Post> updatePost(@Valid @RequestBody Post post){
-		Post newPost = postService.savePost(post);
-		return ResponseEntity.ok().body(newPost);
-	}
-	
 	@DeleteMapping("")
 	public ResponseEntity delete(@RequestBody List<Integer> ids) {
 		ResponseObject response = new ResponseObject<>();
@@ -127,5 +109,27 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("")
+	public ResponseEntity post(@RequestBody @Valid List<PostDTO> posts, BindingResult result) {
+		ResponseObject response = new ResponseObject<>();
+		if (result.hasErrors()) {
+			String message = "";
+			for (ObjectError error : result.getAllErrors()) {
+				message += error.getDefaultMessage() + ". ";
+			}
+			response.setMessage(message.trim());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} else {
+			try {
+				return ResponseEntity.ok(postService.save(posts));
+			} catch (Exception ex) {
+				response.setSuccess(false);
+				response.setMessage(ex.getMessage());
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			}
+		}
 	}
 }
