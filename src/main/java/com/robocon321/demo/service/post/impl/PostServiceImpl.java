@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.post.PostDTO;
 import com.robocon321.demo.dto.review.CommentDTO;
+import com.robocon321.demo.dto.taxomony.TaxomonyDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.post.Post;
 
@@ -127,19 +128,7 @@ public class PostServiceImpl implements PostService {
     	
     	return postDTO;
 	}
-	
-	
-	@Override
-	public Post findBySlug(String slug) {
-		List<Post> list = postRepository.findAll();
-		for(Post post:list) {
-			if(post.getSlug().equals(slug)) {
-				
-				return post;
-			}
-		}
-		return null;
-	}
+
 
 	@Override
 	public List<PostDTO> save(List<PostDTO> postDTOs) throws RuntimeException {
@@ -161,6 +150,9 @@ public class PostServiceImpl implements PostService {
 			post.setStatus(1);
 			post.setModifiedUser(user);
 			post.setModifiedTime(new Date());
+
+			Post postSaved = postRepository.save(post);
+			posts.add(postSaved);
 			
 			List<Taxomony> taxomonies = new ArrayList<>();
 			
@@ -169,14 +161,10 @@ public class PostServiceImpl implements PostService {
 				if(taxomonyOpt.isEmpty()) throw new RuntimeException("Your taxomony not found");
 				else {
 					Taxomony taxomony = taxomonyRepository.findById(taxomonyDTO.getId()).get();
-
-					Post postSaved = postRepository.save(post);
-					posts.add(postSaved);
-
 					taxomony.getObjects().add(postSaved);
 				}
 			});
-			
+
 			taxomonyRepository.saveAll(taxomonies);
 		});
 				
@@ -191,10 +179,19 @@ public class PostServiceImpl implements PostService {
 		BeanUtils.copyProperties(post, postDTO);		
 
     	UserDTO userDTO = new UserDTO();
-    	BeanUtils.copyProperties(post.getModifiedUser(), userDTO);
-    	postDTO.setModifiedUser(userDTO);
+    	if(post.getModifiedUser() != null) {
+    		BeanUtils.copyProperties(post.getModifiedUser(), userDTO);
+        	postDTO.setModifiedUser(userDTO);
+    	}
 		
-		
+    	List<TaxomonyDTO> taxomonyDTOs = post.getTaxomonies().stream().map(taxomony -> {
+    		TaxomonyDTO taxomonyDTO = new TaxomonyDTO();
+    		BeanUtils.copyProperties(taxomony, taxomonyDTO);
+    		return taxomonyDTO;
+    	}).toList();
+    	
+    	postDTO.setTaxomonies(taxomonyDTOs);
+    		
 		return postDTO;
 	}
 
@@ -271,6 +268,53 @@ public class PostServiceImpl implements PostService {
 		}		
 	}
 
+	@Override
+	public List<PostDTO> update(List<PostDTO> postDTOs) throws RuntimeException {
+//		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session is not exists");
+//		UserDTO userDTO = null;
+//		try {
+//			userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
+//		} catch(Exception ex) {
+//			throw new RuntimeException("Your session is invalid");
+//		}
+//		
+//		Optional<User> userOption = userRepository.findById(userDTO.getId());
+//		if(userOption.isEmpty()) throw new RuntimeException("Your user not found");
+//		User user = userOption.get();
+		List<Post> posts = new ArrayList<>();
+		postDTOs.stream().forEach(postDTO -> {
+			// delete old relationship
+			Post postOld = postRepository.findById(postDTO.getId()).get();
+			List<Taxomony> taxomonyOlds = postOld.getTaxomonies();
+			taxomonyOlds.forEach(taxomony -> {
+				taxomony.getObjects().remove(postOld);
+			});
+			
+			// update new relationship
+			Post post = new Post();
+			BeanUtils.copyProperties(postDTO, post);
+			post.setStatus(1);
+//			post.setModifiedUser(user);
+			post.setModifiedTime(new Date());
+			
+			List<Taxomony> taxomonies = new ArrayList<>();
+			Post postSaved = postRepository.save(post);
+			posts.add(postSaved);
+			
+			postDTO.getTaxomonies().stream().forEach(taxomonyDTO -> {
+				Optional<Taxomony> taxomonyOpt = taxomonyRepository.findById(taxomonyDTO.getId());
+				if(taxomonyOpt.isEmpty()) throw new RuntimeException("Your taxomony not found");
+				else {
+					Taxomony taxomony = taxomonyRepository.findById(taxomonyDTO.getId()).get();
 
+					taxomony.getObjects().add(postSaved);
+				}
+			});
+			
+			taxomonyRepository.saveAll(taxomonies);
+		});
+				
+		return convertListEntityToDTO(posts);
+	}
 	
 }
