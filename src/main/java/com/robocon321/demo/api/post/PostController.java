@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -113,6 +114,28 @@ public class PostController {
 
 	@PostMapping("")
 	public ResponseEntity post(@RequestBody @Valid List<PostDTO> posts, BindingResult result) {
+		ResponseObject response = new ResponseObject<>();
+		if (result.hasErrors()) {
+			String message = "";
+			for (ObjectError error : result.getAllErrors()) {
+				message += error.getDefaultMessage() + ". ";
+			}
+			response.setMessage(message.trim());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} else {
+			try {
+				return ResponseEntity.ok(postService.save(posts));
+			} catch (Exception ex) {
+				response.setSuccess(false);
+				response.setMessage(ex.getMessage());
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			}
+		}
+	}
+
+	@PutMapping("")
+	public ResponseEntity put(@RequestBody @Valid List<PostDTO> posts, BindingResult result) {
 		ResponseObject response = new ResponseObject<>();
 		if (result.hasErrors()) {
 			String message = "";
