@@ -270,17 +270,17 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public List<PostDTO> update(List<PostDTO> postDTOs) throws RuntimeException {
-//		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session is not exists");
-//		UserDTO userDTO = null;
-//		try {
-//			userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-//		} catch(Exception ex) {
-//			throw new RuntimeException("Your session is invalid");
-//		}
-//		
-//		Optional<User> userOption = userRepository.findById(userDTO.getId());
-//		if(userOption.isEmpty()) throw new RuntimeException("Your user not found");
-//		User user = userOption.get();
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session is not exists");
+		UserDTO userDTO = null;
+		try {
+			userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
+		} catch(Exception ex) {
+			throw new RuntimeException("Your session is invalid");
+		}
+		
+		Optional<User> userOption = userRepository.findById(userDTO.getId());
+		if(userOption.isEmpty()) throw new RuntimeException("Your user not found");
+		User user = userOption.get();
 		List<Post> posts = new ArrayList<>();
 		postDTOs.stream().forEach(postDTO -> {
 			// delete old relationship
@@ -294,7 +294,7 @@ public class PostServiceImpl implements PostService {
 			Post post = new Post();
 			BeanUtils.copyProperties(postDTO, post);
 			post.setStatus(1);
-//			post.setModifiedUser(user);
+			post.setModifiedUser(user);
 			post.setModifiedTime(new Date());
 			
 			List<Taxomony> taxomonies = new ArrayList<>();
