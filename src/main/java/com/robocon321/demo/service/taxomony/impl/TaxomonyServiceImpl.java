@@ -58,7 +58,7 @@ public class TaxomonyServiceImpl implements TaxomonyService {
 				String[] arrValue = valueEntry.split("%2C");
 				if(arrValue.length == 2) {
 					Specification<Taxomony> specTypeGreater = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
-					Specification<Taxomony> specTypeLess = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					Specification<Taxomony> specTypeLess = TaxomonySpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[1]));
 					spec = specTypeGreater.and(specTypeLess);
 				}
 			}

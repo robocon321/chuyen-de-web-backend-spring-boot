@@ -55,7 +55,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<UserDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter) {
+	public Optional<User> findById(Integer id) {
+		// TODO Auto-generated method stub
+		return userRepository.findById(id);
+	}
+	@Override
+public Page<UserDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter) {
 		Specification<User> spec = UserSpecification.filter(new FilterCriteria("fullname", FilterOperate.LIKE, search));
 
 		for(Map.Entry<String, String> entry : filter.entrySet()) {
