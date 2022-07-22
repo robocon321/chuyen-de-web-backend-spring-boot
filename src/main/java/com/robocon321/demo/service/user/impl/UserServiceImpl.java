@@ -1,5 +1,6 @@
 package com.robocon321.demo.service.user.impl;
 
+import java.lang.StackWalker.Option;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +16,11 @@ import org.springframework.stereotype.Service;
 
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.user.UserDTO;
+import com.robocon321.demo.entity.user.Role;
 import com.robocon321.demo.entity.user.User;
+import com.robocon321.demo.entity.user.UserAccount;
+import com.robocon321.demo.repository.RoleRepository;
+import com.robocon321.demo.repository.UserAccountRepository;
 import com.robocon321.demo.repository.UserRepository;
 import com.robocon321.demo.service.user.UserService;
 import com.robocon321.demo.specs.UserSpecification;
@@ -25,6 +30,12 @@ import com.robocon321.demo.type.FilterOperate;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	@Autowired
+	private UserAccountRepository userAccountRepository;
 
 	@Override
 	public UserDTO update(UserDTO userDTO) throws RuntimeException {
@@ -150,6 +161,50 @@ public Page<UserDTO> getPage(String search, Integer size, Integer page, String s
     	}
     	
     	return userDTO;
+	}
+
+
+	private List<UserDTO> convertListEntityToDTO(List<User> users) {
+		return users.stream().map(user -> {
+			return convertEntityToDTO(user);
+		}).toList();
+	}
+	
+	@Override
+	public List<UserDTO> save(List<UserDTO> userDTOs) throws RuntimeException {		
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session invalid");
+		UserDTO userModDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Optional<User> userModOpt = userRepository.findById(userModDTO.getId());
+		if(userModOpt.isEmpty()) throw new RuntimeException("Your user not found");
+		User userMod = userModOpt.get();
+		
+		List<User> users = userDTOs.stream().map(userDTO -> {
+			// check exists username
+			if(userAccountRepository.existsByUsername(userDTO.getUserAccount().getUsername())) throw new RuntimeException("Your username exists");
+			
+			User user = new User();
+			BeanUtils.copyProperties(userDTO, user);
+			
+			// set role
+			List<Role> roles = userDTO.getRoles().stream().map(roleDTO -> {
+				Optional<Role> roleOpt = roleRepository.findById(roleDTO.getId());
+				if(roleOpt.isEmpty()) throw new RuntimeException("Not found your role");				
+				return roleOpt.get();
+			}).toList();
+			user.setRoles(roles);
+			
+			// set user account
+			UserAccount userAccount = new UserAccount();
+			BeanUtils.copyProperties(userDTO.getUserAccount(), userAccount);
+			user.setUserAccount(userAccount);
+			user.setModifiedUser(userMod);
+			userAccount.setUser(user);
+			
+			return user;
+		}).toList();
+		
+		users = userRepository.saveAll(users);	
+		return convertListEntityToDTO(users);
 	}
 	
 }
