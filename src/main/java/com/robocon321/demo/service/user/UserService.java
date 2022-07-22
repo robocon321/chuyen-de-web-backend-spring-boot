@@ -10,9 +10,9 @@ import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.user.User;
 
 public interface UserService {
-	public UserDTO update(UserDTO userDTO);
 	public Page<UserDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter);
 	public void delete(List<Integer> ids);
 	public List<UserDTO> save(List<UserDTO> userDTOs);
-	public Optional<User> findById(Integer id);
+	public List<UserDTO> update(List<UserDTO> userDTOs);
+	public UserDTO findById(Integer id);
 }
