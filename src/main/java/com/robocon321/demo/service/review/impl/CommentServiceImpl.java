@@ -52,9 +52,11 @@ public class CommentServiceImpl implements CommentService {
 			} else if(keyEntry.startsWith("BT")) {
 				String field = keyEntry.substring(8);
 				String[] arrValue = valueEntry.split("%2C");
+				System.out.println(arrValue);
 				if(arrValue.length == 2) {
+					
 					Specification<Comment> specTypeGreater = CommentSpecification.filter(new FilterCriteria(field, FilterOperate.GREATER, arrValue[0]));
-					Specification<Comment> specTypeLess = CommentSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[0]));
+					Specification<Comment> specTypeLess = CommentSpecification.filter(new FilterCriteria(field, FilterOperate.LESS, arrValue[1]));
 					spec = specTypeGreater.and(specTypeLess);
 				}
 			}

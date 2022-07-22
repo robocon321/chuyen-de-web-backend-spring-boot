@@ -88,11 +88,11 @@ public class ProductController {
 	}
 	
 	
-	@PostMapping("")
-	public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws URISyntaxException {
-		Product newProduct = productService.saveProduct(product);
-		return ResponseEntity.created(new URI("/products/"+newProduct.getId())).body(newProduct);
-	}
+//	@PostMapping("")
+//	public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO product) throws URISyntaxException {
+//		ProductDTO newProduct = productService.saveProduct(product);
+//		return ResponseEntity.created(new URI("/products/"+newProduct.getId())).body(newProduct);
+//	}
 	@PutMapping("")
 	public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product){
 		Product newProduct = productService.saveProduct(product);
