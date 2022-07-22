@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,43 +31,6 @@ import com.robocon321.demo.service.user.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;
-
-	@PutMapping("")
-	public ResponseEntity update(@Valid @RequestBody UserDTO dto, BindingResult result) {
-		ResponseObject response = new ResponseObject<>();
-		if (result.hasErrors()) {
-			String message = "";
-			for (ObjectError error : result.getAllErrors()) {
-				message += error.getDefaultMessage() + ". ";
-			}
-			response.setMessage(message.trim());
-			response.setSuccess(false);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		} else {
-			if(dto.getId() == null) {
-				response.setMessage("Id not null");
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);				
-			}
-			
-						
-			try {
-				UserDTO userDTO = userService.update(dto);
-				if(userDTO == null) {
-					response.setMessage("Not found user with id: " + dto.getId());
-					response.setSuccess(false);
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-				} else {
-					response.setData(userService.update(dto));
-					response.setSuccess(true);					
-				}
-				return ResponseEntity.ok(response);
-			} catch (Exception e) {
-				response.setSuccess(false);
-				response.setMessage(e.getMessage());
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-			}
-		}
-	}
 
 	@GetMapping("")
 	public ResponseEntity get(@RequestParam Map<String, String> request) {
@@ -147,6 +112,48 @@ public class UserController {
 		} else {
 			try {
 				response.setData(userService.save(userDTOs));
+				response.setMessage("Successful!");
+				response.setSuccess(true);
+				return ResponseEntity.ok(response);
+			} catch(Exception ex) {
+				ex.printStackTrace();
+				response.setMessage("Server fail");
+				response.setSuccess(false);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			}
+		}		
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity get(@PathVariable Integer id) {
+		ResponseObject response = new ResponseObject<>();
+		try {
+			response.setData(userService.findById(id));
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+		}
+	}
+
+	@PutMapping("")
+	public ResponseEntity update(@Valid @RequestBody List<UserDTO> userDTOs, BindingResult result) {
+		ResponseObject response = new ResponseObject<>();
+		if (result.hasErrors()) {
+			String message = "";
+			for (ObjectError error : result.getAllErrors()) {
+				message += error.getDefaultMessage() + ". ";
+			}
+			response.setMessage(message.trim());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} else {
+			try {
+				response.setData(userService.update(userDTOs));
 				response.setMessage("Successful!");
 				response.setSuccess(true);
 				return ResponseEntity.ok(response);
