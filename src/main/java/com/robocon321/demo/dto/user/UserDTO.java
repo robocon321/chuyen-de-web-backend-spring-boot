@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.URL;
 
@@ -29,5 +28,6 @@ public class UserDTO {
 	private Integer status;
 	private UserDTO modifiedUser;
 	private Date modifiedTime;
+	private UserAccountDTO userAccount;	
 	private List<RoleDTO> roles = new ArrayList<>();
 }

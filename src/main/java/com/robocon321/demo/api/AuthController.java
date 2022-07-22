@@ -119,7 +119,7 @@ public class AuthController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			} else {
 				UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				response.setData(obj);				
+				response.setData(obj);
 				response.setSuccess(true);
 				response.setMessage("Successfull!");
 				return ResponseEntity.ok(response);

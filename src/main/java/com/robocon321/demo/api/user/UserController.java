@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
-import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.service.user.UserService;
 
@@ -131,5 +131,31 @@ public class UserController {
 			response.setSuccess(false);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);			
 		}
+	}
+
+	@PostMapping("")
+	public ResponseEntity save(@Valid @RequestBody List<UserDTO> userDTOs, BindingResult result) {
+		ResponseObject response = new ResponseObject<>();
+		if (result.hasErrors()) {
+			String message = "";
+			for (ObjectError error : result.getAllErrors()) {
+				message += error.getDefaultMessage() + ". ";
+			}
+			response.setMessage(message.trim());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} else {
+			try {
+				response.setData(userService.save(userDTOs));
+				response.setMessage("Successful!");
+				response.setSuccess(true);
+				return ResponseEntity.ok(response);
+			} catch(Exception ex) {
+				ex.printStackTrace();
+				response.setMessage("Server fail");
+				response.setSuccess(false);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			}
+		}		
 	}
 }
