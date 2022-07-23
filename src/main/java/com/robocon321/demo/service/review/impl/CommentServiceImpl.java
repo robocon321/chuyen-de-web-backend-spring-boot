@@ -82,8 +82,10 @@ public class CommentServiceImpl implements CommentService {
 			BeanUtils.copyProperties(comment, dto);
 			
 			UserDTO userDTO = new UserDTO();
-			BeanUtils.copyProperties(comment.getModifiedUser(), userDTO);
-			dto.setModifiedUser(userDTO);
+			if(comment.getModifiedUser() != null) {
+				BeanUtils.copyProperties(comment.getModifiedUser(), userDTO);
+				dto.setModifiedUser(userDTO);				
+			}
 			
 			Comment parent = comment.getParent();
 			if(parent != null) {
