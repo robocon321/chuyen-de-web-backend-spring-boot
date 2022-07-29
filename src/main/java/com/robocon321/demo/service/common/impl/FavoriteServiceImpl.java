@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 	}
 
 	private List<FavoriteDTO> convertListEntityToDTO(List<Favorite> entities) {
-		return entities.stream().map(entity -> convertEntityToDTO(entity)).toList();
+		return entities.stream().map(entity -> convertEntityToDTO(entity)).collect(Collectors.toList());
 	}
 	
 	private FavoriteDTO convertEntityToDTO(Favorite favorite) {

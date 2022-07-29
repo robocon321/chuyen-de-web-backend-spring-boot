@@ -16,15 +16,19 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.common.Contact;
 import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cart")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart {
@@ -49,7 +53,7 @@ public class Cart {
 	@JsonIgnore
 	private List<CartItem> cartItems;
 	
-//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "cart")
-//	@JsonIgnore
-//	private Checkout checkout;
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "cart")
+	@JsonIgnore
+	private Checkout checkout;
 }

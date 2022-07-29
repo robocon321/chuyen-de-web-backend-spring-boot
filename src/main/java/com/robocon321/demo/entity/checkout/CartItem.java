@@ -1,5 +1,7 @@
 package com.robocon321.demo.entity.checkout;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,15 +12,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robocon321.demo.entity.post.Post;
+import com.robocon321.demo.entity.post.product.Attribute;
 import com.robocon321.demo.entity.post.product.Product;
+import com.robocon321.demo.entity.taxomony.Taxomony;
+import com.robocon321.demo.entity.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "cart_item")
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem {

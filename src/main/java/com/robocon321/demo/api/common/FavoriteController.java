@@ -79,6 +79,7 @@ public class FavoriteController {
 
 	@PostMapping("")
 	public ResponseEntity add(@RequestBody List<Integer> ids) {
+		System.out.println(ids);
 		ResponseObject response = new ResponseObject<>();
 		try {
 			List<FavoriteDTO> favoriteDTOs = favoriteService.add(ids);
