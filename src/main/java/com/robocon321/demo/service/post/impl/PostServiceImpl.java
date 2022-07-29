@@ -3,6 +3,7 @@ package com.robocon321.demo.service.post.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	private List<PostDTO> convertListEntityToDTO(List<Post> posts) {
-		return posts.stream().map(post -> convertEntityToDTO(post)).toList();
+		return posts.stream().map(post -> convertEntityToDTO(post)).collect(Collectors.toList());
 	}
 	
 	private PostDTO convertEntityToDTO(Post post) {

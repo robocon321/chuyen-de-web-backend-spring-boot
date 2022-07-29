@@ -9,5 +9,8 @@ import com.robocon321.demo.entity.user.User;
 public interface CartService {
 	public List<CartDTO> getAll(Map<String, String> request);
 	public List<Cart> findByModUserid(Integer userId);
+	public Cart saveCart(Cart cart);
+	public void delete(List<Integer> ids);
+	public List<Cart> getLastCart(Integer userId);
 
 }

@@ -3,20 +3,29 @@ package com.robocon321.demo.service.checkout.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.checkout.CartDTO;
+import com.robocon321.demo.dto.checkout.CartItemDTO;
+import com.robocon321.demo.dto.post.product.ProductDTO;
 //import com.robocon321.demo.dto.review.CartDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.checkout.Cart;
+import com.robocon321.demo.entity.checkout.CartItem;
+import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.user.User;
 //import com.robocon321.demo.entity.review.Cart;
 import com.robocon321.demo.repository.CartRepository;
+import com.robocon321.demo.repository.ProductRepository;
+import com.robocon321.demo.repository.UserRepository;
 import com.robocon321.demo.service.checkout.CartService;
 import com.robocon321.demo.specs.CartSpecification;
 //import com.robocon321.demo.specs.CartSpecification;
@@ -27,7 +36,13 @@ public class CartServiceImpl implements CartService{
 	
 	@Autowired
 	private CartRepository cartRepository;
-
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
 	@Override
 	public List<CartDTO> getAll(Map<String, String> filter) {
 		Specification<Cart> spec = null;	
@@ -101,6 +116,26 @@ public class CartServiceImpl implements CartService{
 		
 		return cartDTOs;
 	}
+	
+//	private List<CartItemDTO> convertListEntityToDTO(List<CartItem> cartitems){
+//		return cartitems.stream().map(cartItem -> convertEntityToDTO(cartItem)).collect(Collectors.toList());
+//	}
+//	
+//	private CartItemDTO convertEntityToDTO(CartItem cartItem) {
+//		CartItemDTO cartItemDTO = new CartItemDTO();
+//		
+//		BeanUtils.copyProperties(cartItem, cartItemDTO);
+//		
+//		CartDTO cartDTO = new CartDTO();
+//		BeanUtils.copyProperties(cartItem.getCart(), cartDTO);
+//		cartItemDTO.setCart(cartDTO);
+//		
+//		ProductDTO productDTO = new ProductDTO();
+//		BeanUtils.copyProperties(cartItem.getProduct(), productDTO);
+//		cartItemDTO.setProduct(productDTO);
+//		
+//		return cartItemDTO;
+//	}
 
 	@Override
 	public List<Cart> findByModUserid(Integer userId) {
@@ -114,7 +149,25 @@ public class CartServiceImpl implements CartService{
 		}
 		return result;
 	}
-	
-	
 
+	@Override
+	public Cart saveCart(Cart cart) {
+		return cartRepository.save(cart);
+	}
+
+	@Override
+	public void delete(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+//	public List<Cart> getLastCasrt(Integer userId) {
+//		return cartRepository.findByModifiedUserOrderByModifiedTimeDesc(userRepository.findById(userId).get());
+//	}
+
+	@Override
+	public List<Cart> getLastCart(Integer userId) {
+		// TODO Auto-generated method stub
+		return cartRepository.findByModifiedUserOrderByModifiedTimeDesc(userRepository.findById(userId).get());
+	}
 }
