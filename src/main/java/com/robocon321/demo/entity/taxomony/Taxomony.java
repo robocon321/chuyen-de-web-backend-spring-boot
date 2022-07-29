@@ -10,13 +10,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.ManyToAny;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robocon321.demo.entity.common.ViewObj;
@@ -80,4 +83,10 @@ public class Taxomony implements ViewObj{
 	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "parent")
 	@JsonIgnore
 	private List<Taxomony> childs;
+	
+	@ManyToAny(metaDef = "taxomony_obj", metaColumn = @Column(name = "type"))
+	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST })
+	@JoinTable(name = "taxomony_relationship", joinColumns = @JoinColumn(name = "taxomony_id"), inverseJoinColumns = @JoinColumn(name = "object_id"))
+	@JsonIgnore
+	private List<TaxomonyObj> objects;
 }

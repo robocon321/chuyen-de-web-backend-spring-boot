@@ -11,11 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.ManyToAny;
@@ -84,6 +86,9 @@ public class Post implements ViewObj, TaxomonyObj {
 
 	@Formula("(select ROUND(avg(vote.star), 1) from vote where vote.post_id = id)")
 	private Double averageRating;
+	
+	@Formula("(select count(*) from view where view.type = type and view.object_id = id)")
+	private Integer totalView;
 
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "mod_user_id")
@@ -122,5 +127,6 @@ public class Post implements ViewObj, TaxomonyObj {
 	@ManyToAny(metaDef = "taxomony_obj", metaColumn = @Column(name = "type"))
 	@Cascade({ org.hibernate.annotations.CascadeType.PERSIST })
 	@JoinTable(name = "taxomony_relationship", joinColumns = @JoinColumn(name = "object_id"), inverseJoinColumns = @JoinColumn(name = "taxomony_id"))
+	@JsonIgnore
 	private List<Taxomony> taxomonies;
 }

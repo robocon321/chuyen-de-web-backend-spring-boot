@@ -10,13 +10,10 @@ import javax.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.robocon321.demo.domain.FilterCriteria;
-import com.robocon321.demo.entity.post.Post;
-import com.robocon321.demo.entity.review.Comment;
-import com.robocon321.demo.entity.taxomony.Taxomony;
 import com.robocon321.demo.entity.user.User;
 
-public class PostSpecification {
-	public static Specification<Post> filter(FilterCriteria criteria) throws RuntimeException {
+public class UserSpecification {
+	public static Specification<User> filter(FilterCriteria criteria) throws RuntimeException {
 		return (root, query, builder) -> {
 			if (criteria == null) {
 				return null;
@@ -27,10 +24,10 @@ public class PostSpecification {
 			if (splitField.length >= 2) {
 				String field = splitField[splitField.length - 1];
 
-				Join postJoin = null;
+				Join userJoin = null;
 
 				for (int i = 0; i < splitField.length - 1; i++) {
-					postJoin = root.join(splitField[i]);
+					userJoin = root.join(splitField[i]);
 				}
 
 				switch (criteria.getOperator()) {
@@ -63,15 +60,15 @@ public class PostSpecification {
 								criteria.getValue().toString());
 					}
 				case LIKE:
-					return builder.like(postJoin.get(field), "%" + criteria.getValue() + "%");
+					return builder.like(userJoin.get(field), "%" + criteria.getValue() + "%");
 				case EQUALS:
-					return builder.equal(postJoin.get(field), criteria.getValue());
+					return builder.equal(userJoin.get(field), criteria.getValue());
 				case NOT_EQUALS:
-					return builder.notEqual(postJoin.get(field), criteria.getValue());
+					return builder.notEqual(userJoin.get(field), criteria.getValue());
 				case STARTS_WITH:
-					return builder.like(postJoin.get(field), criteria.getValue() + "%");
+					return builder.like(userJoin.get(field), criteria.getValue() + "%");
 				case ENDS_WITH:
-					return builder.like(postJoin.get(field), "%" + criteria.getValue());
+					return builder.like(userJoin.get(field), "%" + criteria.getValue());
 				default:
 					throw new RuntimeException("Operation not supported yet");
 

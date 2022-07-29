@@ -18,13 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.CustomUserDetails;
+import com.robocon321.demo.domain.EmailDetails;
 import com.robocon321.demo.domain.ResponseObject;
 import com.robocon321.demo.dto.user.UserAccountDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.dto.user.UserSocialDTO;
 import com.robocon321.demo.entity.user.User;
+import com.robocon321.demo.entity.user.UserAccount;
+import com.robocon321.demo.repository.UserAccountRepository;
+import com.robocon321.demo.service.common.EmailService;
 import com.robocon321.demo.service.user.AuthService;
 import com.robocon321.demo.token.JwtTokenProvider;
+import com.robocon321.demo.util.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +45,12 @@ public class AuthController {
 
 	@Autowired
 	private AuthService authService;
+	
+	@Autowired
+	private UserAccountRepository userAccountRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@PostMapping("/loginAccount")
 	public ResponseEntity loginAccount(@Valid @RequestBody UserAccountDTO userAccountDTO, BindingResult result) {
@@ -119,7 +130,7 @@ public class AuthController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 			} else {
 				UserDTO obj = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				response.setData(obj);				
+				response.setData(obj);
 				response.setSuccess(true);
 				response.setMessage("Successfull!");
 				return ResponseEntity.ok(response);
@@ -185,5 +196,48 @@ public class AuthController {
 		
 	}
 
+	@PostMapping("/reset")
+	public ResponseEntity resetPass(@RequestBody UserAccountDTO userAccountDTO) { 
+		String username = userAccountDTO.getUsername();
+		ResponseObject response = new ResponseObject<>();
+		
+		if(username == null || username.length() == 0) {
+			response.setMessage("Your username is null");
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+		
+		UserAccount userAccount = userAccountRepository.findByUsername(username);
+
+		if(userAccount == null) {
+			response.setMessage("Your account isn't found");
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+		
+		User user = userAccount.getUser();
+		
+		if(user.getEmail() == null || user.getEmail().length() == 0) {
+			response.setMessage("Your email does not found");
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+		
+		String newPass = Util.generatePassayPassword();
+		
+		userAccount.setPassword(newPass);
+		userAccountRepository.save(userAccount);
+		
+		EmailDetails emailDetails = new EmailDetails(user.getEmail(), "Cập nhật mật khẩu cho tài khoản: " + userAccount.getUsername(), "Mật khẩu mới của bạn là: " + newPass);
 	
+		if(emailService.sendSimpleMail(emailDetails)) {
+			response.setMessage("Successful! We just send new password to " +user.getEmail());
+			response.setSuccess(true);
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		} else {
+			response.setMessage("Can not send mail");
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);			
+		}
+	}	
 }

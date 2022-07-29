@@ -1,7 +1,8 @@
-package com.robocon321.demo.api.post;
+package com.robocon321.demo.api.common;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -9,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,16 +22,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.robocon321.demo.domain.EmailDetails;
 import com.robocon321.demo.domain.ResponseObject;
-import com.robocon321.demo.dto.post.PostDTO;
-import com.robocon321.demo.service.post.PostService;
-
+import com.robocon321.demo.dto.common.FeedbackDTO;
+import com.robocon321.demo.dto.common.ReplyFeedbackDTO;
+import com.robocon321.demo.dto.user.UserDTO;
+import com.robocon321.demo.entity.common.Feedback;
+import com.robocon321.demo.entity.user.User;
+import com.robocon321.demo.repository.FeedbackRepository;
+import com.robocon321.demo.repository.UserRepository;
+import com.robocon321.demo.service.common.EmailService;
+import com.robocon321.demo.service.common.FeedbackService;
 
 @RestController
-@RequestMapping("/posts")
-public class PostController {
+@RequestMapping("/feedbacks")
+public class FeedbackController {
 	@Autowired
-	private PostService postService;
+	private FeedbackService feedbackService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private FeedbackRepository feedbackRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+
 
 	@GetMapping("")
 	public ResponseEntity get(@RequestParam Map<String, String> request) {
@@ -75,19 +93,44 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
 
-		Page<PostDTO> pageResponse = postService.getPage(search, size, page, sort, request);
+		Page<FeedbackDTO> pageResponse = feedbackService.getPage(search, size, page, sort, request);
 		response.setData(pageResponse);
 		response.setMessage("Successful!");
 		response.setSuccess(true);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
+
+	@PostMapping("")
+	public ResponseEntity save(@Valid @RequestBody List<FeedbackDTO> dtos, BindingResult result) {
+		ResponseObject response = new ResponseObject<>();
+		if (result.hasErrors()) {
+			String message = "";
+			for (ObjectError error : result.getAllErrors()) {
+				message += error.getDefaultMessage() + ". ";
+			}
+			response.setMessage(message.trim());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		} else {
+			try {
+				List<FeedbackDTO> data = feedbackService.insert(dtos);
+				response.setData(data);
+				response.setSuccess(true);
+				return ResponseEntity.ok(response);
+			} catch (Exception ex) {
+				response.setMessage(ex.getMessage());
+				response.setSuccess(false);
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			}
+		}
+	}
+
 	@DeleteMapping("")
 	public ResponseEntity delete(@RequestBody List<Integer> ids) {
 		ResponseObject response = new ResponseObject<>();
 		try {
-			postService.delete(ids);
+			feedbackService.delete(ids);
 			response.setMessage("Successful!");
 			response.setSuccess(true);
 			return ResponseEntity.ok(response);
@@ -97,23 +140,9 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);			
 		}
 	}
-	
-	@GetMapping("/{slug}")
-	public ResponseEntity get(@PathVariable String slug) {
-		ResponseObject response = new ResponseObject<>();
-		try {
-			response.setData(postService.getDetailPostBySlug(slug));
-			response.setSuccess(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.setSuccess(false);
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-		}
-		return ResponseEntity.ok(response);
-	}
 
-	@PostMapping("")
-	public ResponseEntity post(@RequestBody @Valid List<PostDTO> posts, BindingResult result) {
+	@PostMapping("/reply")
+	public ResponseEntity reply(@Valid @RequestBody ReplyFeedbackDTO replyFeedbackDTO, BindingResult result) {
 		ResponseObject response = new ResponseObject<>();
 		if (result.hasErrors()) {
 			String message = "";
@@ -125,32 +154,38 @@ public class PostController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		} else {
 			try {
-				return ResponseEntity.ok(postService.save(posts));
-			} catch (Exception ex) {
-				response.setSuccess(false);
-				response.setMessage(ex.getMessage());
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-			}
-		}
-	}
+				Optional<Feedback> feedbackOpt = feedbackRepository.findById(replyFeedbackDTO.getFeedbackId());
+				if (feedbackOpt.isEmpty())
+					throw new RuntimeException("Your feedback is invalid");
 
-	@PutMapping("")
-	public ResponseEntity put(@RequestBody @Valid List<PostDTO> posts, BindingResult result) {
-		ResponseObject response = new ResponseObject<>();
-		if (result.hasErrors()) {
-			String message = "";
-			for (ObjectError error : result.getAllErrors()) {
-				message += error.getDefaultMessage() + ". ";
-			}
-			response.setMessage(message.trim());
-			response.setSuccess(false);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		} else {
-			try {
-				return ResponseEntity.ok(postService.save(posts));
+				Feedback feedback = feedbackOpt.get();
+
+				if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) throw new RuntimeException("Your session is invalid");
+				try {
+					UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+					User user = userRepository.findById(userDTO.getId()).get();
+					feedback.setUser(user);
+				} catch(Exception ex) {
+					throw new RuntimeException("Your session not found");
+				}
+				
+				EmailDetails emailDetail = new EmailDetails();
+				
+				emailDetail.setSendTo(feedback.getEmail());
+				emailDetail.setContent(replyFeedbackDTO.getContent());
+				emailDetail.setSubject(replyFeedbackDTO.getSubject());
+				
+				emailService.sendSimpleMail(emailDetail);
+				
+				feedback.setStatus(1);
+				feedbackRepository.save(feedback);
+
+				response.setMessage("Successful!");
+				response.setSuccess(true);
+				return ResponseEntity.ok(response);
 			} catch (Exception ex) {
-				response.setSuccess(false);
 				response.setMessage(ex.getMessage());
+				response.setSuccess(false);
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 			}
 		}

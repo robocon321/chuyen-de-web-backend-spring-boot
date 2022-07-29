@@ -138,7 +138,6 @@ public class FavoriteServiceImpl implements FavoriteService {
 			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == null) {
 				throw new RuntimeException("Your session not found");
 			} else {
-				Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				Optional<User> optional = userRepository.findById(userDTO.getId());
 				if(optional.isPresent()) {

@@ -13,10 +13,9 @@ public interface PostService {
 	public Page<PostDTO> getPage(String search, Integer size, Integer page, String sort, Map<String, String> filter);
 	public List<PostDTO> getAll(String search, String sort, Map<String, String> filter);
 
-	public Post savePost(Post post);
-	public void deletePost(Integer postId);
-	Post findBySlug(String slug);
+	public List<PostDTO> save(List<PostDTO> postDTOs);
+	public List<PostDTO> update(List<PostDTO> postDTOs);
+	public void delete(List<Integer> ids);
 
 	public PostDTO getDetailPostBySlug(String slug);
-
 }
