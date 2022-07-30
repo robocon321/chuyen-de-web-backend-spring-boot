@@ -15,5 +15,5 @@ public interface ProductService {
 	public void deleteProduct(Integer productId);
 	public Product findBySlug(String slug);
 	//product DTO
-	public ProductDTO add(ProductDTO product);
+	public ProductDTO add(ProductDTO product);	
 }

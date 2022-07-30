@@ -82,6 +82,23 @@ public class PostController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+
+	@GetMapping("/ids")
+	public ResponseEntity get(@RequestParam List<Integer> ids) {
+		ResponseObject response = new ResponseObject<>();
+		
+		try {
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			response.setData(postService.getPostByIds(ids));
+			return ResponseEntity.ok(response);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+			response.setMessage("Your ids are invalid");
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+		}
+	}
 	
 	@DeleteMapping("")
 	public ResponseEntity delete(@RequestBody List<Integer> ids) {
