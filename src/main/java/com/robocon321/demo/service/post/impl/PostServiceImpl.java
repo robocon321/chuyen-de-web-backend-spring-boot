@@ -316,5 +316,12 @@ public class PostServiceImpl implements PostService {
 				
 		return convertListEntityToDTO(posts);
 	}
+
+
+	@Override
+	public List<PostDTO> getPostByIds(List<Integer> ids) {
+		List<Post> posts = postRepository.findAllById(ids);
+		return convertListEntityToDTO(posts);
+	}
 	
 }
