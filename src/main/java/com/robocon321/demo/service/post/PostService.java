@@ -18,4 +18,5 @@ public interface PostService {
 	public void delete(List<Integer> ids);
 
 	public PostDTO getDetailPostBySlug(String slug);
+	public List<PostDTO> getPostByIds(List<Integer> ids);
 }

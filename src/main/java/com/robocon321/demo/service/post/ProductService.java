@@ -18,5 +18,5 @@ public interface ProductService {
 	public List<ProductDTO> getAll(Map<String, String> request);
 	public List<ProductDTO> update(List<ProductDTO> productDTOs);
 	//product DTO
-//	public ProductDTO add(ProductDTO product);
+
 }
