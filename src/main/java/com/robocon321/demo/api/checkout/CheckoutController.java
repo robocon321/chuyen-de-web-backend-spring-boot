@@ -2,6 +2,7 @@ package com.robocon321.demo.api.checkout;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -81,10 +82,19 @@ public class CheckoutController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	@GetMapping("/getAll")
+	public ResponseEntity getAll(@RequestParam Map<String, String> request) {
+		ResponseObject response = new ResponseObject<>();		
+		response.setData(checkoutService.getAll(request));
+		response.setMessage("Successful!");
+		response.setSuccess(true);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 	
-	@PostMapping(value = "")
-	public ResponseEntity<Checkout> createCheckout(@Valid @RequestBody Checkout checkout) throws URISyntaxException{
-		Checkout newCheckout = checkoutService.saveCheckout(checkout);
-		return ResponseEntity.created(new URI("/checkouts/"+newCheckout.getId())).body(newCheckout);
+	@PostMapping("")
+	public ResponseEntity createCheckout(@RequestBody @Valid List<CheckoutDTO> checkout) throws URISyntaxException{
+//		Checkout newCheckout = checkoutService.saveCheckout(checkout);
+		return ResponseEntity.ok(checkoutService.saveCheckout(checkout));
 	}
 }

@@ -1,6 +1,7 @@
 package com.robocon321.demo.service.checkout.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -128,12 +129,12 @@ public class CartItemServiceImpl implements CartItemService{
 	
 	@Override
 	public void delete(List<Integer> ids) {
-		// TODO Auto-generated method stub
+		cartItemRepository.deleteAllById(ids);
 		
 	}
 
 	@Override
-	public List<CartItemDTO> add(List<Integer> ids) throws RuntimeException{
+	public List<CartItemDTO> save(List<Integer> ids) throws RuntimeException{
 		System.out.println("List ids------- "+ids);
 		try {
 			if(SecurityContextHolder.getContext().getAuthentication().getPrincipal()==null) {
@@ -142,21 +143,36 @@ public class CartItemServiceImpl implements CartItemService{
 				Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				UserDTO userDTO = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				Optional<User> optional = userRepository.findById(userDTO.getId());
+				System.err.println(userDTO.getId());
 //				System.out.println(optional);
 				if(optional.isPresent()) {
 					List<CartItem> cartItems = new ArrayList<>();
 					for(Integer id:ids) {
 						Optional<Product> productOpt = productRepository.findById(id);
 						List<Cart> cartOpt = cartRepository.findByModifiedUserOrderByModifiedTimeDesc(optional.get());
-						if(productOpt.isPresent()) {
-						CartItem cartItem = new CartItem();
-						cartItem.setProduct(productOpt.get());
-						cartItem.setCart(cartOpt.get(0));
-						cartItem.setQuantity(1);
-						cartItems.add(cartItem);
+						if(!(cartOpt.size()<1)) {
+							if(productOpt.isPresent()) {
+								CartItem cartItem = new CartItem();
+								cartItem.setProduct(productOpt.get());
+								cartItem.setCart(cartOpt.get(0));
+								cartItem.setQuantity(1);
+								cartItems.add(cartItem);
+								}else {
+									throw new RuntimeException("Your product not found");
+								}
 						}else {
-							throw new RuntimeException("Your product not found");
+							Cart cartnew = new Cart();
+							cartnew.setStatus(1);
+							cartnew.setModifiedTime(new Date());
+							cartnew.setModifiedUser(optional.get());
+							cartRepository.save(cartnew);
+							CartItem cartItem = new CartItem();
+							cartItem.setProduct(productOpt.get());
+							cartItem.setCart(cartnew);
+							cartItem.setQuantity(1);
+							cartItems.add(cartItem);
 						}
+						
 					}
 					cartItems = cartItemRepository.saveAll(cartItems);
 					return convertListEntityToDTO(cartItems);
@@ -184,6 +200,29 @@ public class CartItemServiceImpl implements CartItemService{
 		}catch(Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException("Your session is invalid");
+		}
+	}
+
+	@Override
+	public CartItemDTO update(CartItemDTO cartItemDTO) {
+		CartItem cartItem = new CartItem();
+		try {
+		BeanUtils.copyProperties(cartItemDTO, cartItem);
+		
+		Product product = new Product();
+		BeanUtils.copyProperties(cartItemDTO.getProduct(), product);
+		cartItem.setProduct(product);
+		
+		Cart cart = new Cart();
+		BeanUtils.copyProperties(cartItemDTO.getCart(), cart);
+		cartItem.setCart(cart);
+		
+		cartItemRepository.save(cartItem);
+		return convertEntityToDTO(cartItem);}
+		catch (Exception e) {
+			System.out.println(cartItemDTO);
+			// TODO: handle exception
+			return null;
 		}
 	}
 }

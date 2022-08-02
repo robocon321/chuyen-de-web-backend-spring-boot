@@ -3,6 +3,7 @@ package com.robocon321.demo.service.user.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +149,7 @@ public class UserServiceImpl implements UserService {
 			RoleDTO roleDTO = new RoleDTO();
 			BeanUtils.copyProperties(role, roleDTO);
 			return roleDTO;
-		}).toList();
+		}).collect(Collectors.toList());
 		
 		userDTO.setRoles(roleDTOs);
 		userDTO.getUserAccount().setPassword("");
@@ -159,7 +160,7 @@ public class UserServiceImpl implements UserService {
 	private List<UserDTO> convertListEntityToDTO(List<User> users) {
 		return users.stream().map(user -> {
 			return convertEntityToDTO(user);
-		}).toList();
+		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -186,7 +187,7 @@ public class UserServiceImpl implements UserService {
 				if (roleOpt.isEmpty())
 					throw new RuntimeException("Not found your role");
 				return roleOpt.get();
-			}).toList();
+			}).collect(Collectors.toList());
 			user.setRoles(roles);
 
 			// set user account
@@ -197,7 +198,7 @@ public class UserServiceImpl implements UserService {
 			userAccount.setUser(user);
 
 			return user;
-		}).toList();
+		}).collect(Collectors.toList());
 
 		users = userRepository.saveAll(users);
 		return convertListEntityToDTO(users);
@@ -235,7 +236,7 @@ public class UserServiceImpl implements UserService {
 				if (roleOpt.isEmpty())
 					throw new RuntimeException("Not found your role");
 				return roleOpt.get();
-			}).toList();
+			}).collect(Collectors.toList());
 			user.setRoles(roles);
 
 			// set user account
@@ -246,7 +247,7 @@ public class UserServiceImpl implements UserService {
 			userAccount.setUser(user);
 
 			return user;
-		}).toList();
+		}).collect(Collectors.toList());
 
 		users = userRepository.saveAll(users);
 		return convertListEntityToDTO(users);

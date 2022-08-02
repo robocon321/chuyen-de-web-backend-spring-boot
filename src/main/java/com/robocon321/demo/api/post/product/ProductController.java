@@ -1,9 +1,9 @@
 package com.robocon321.demo.api.post.product;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 
 import javax.validation.Valid;
 
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,6 @@ import com.robocon321.demo.dto.post.product.ProductDTO;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.service.post.ProductService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/products")
@@ -80,6 +80,16 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	@GetMapping("/getAll")
+	public ResponseEntity getAll(@RequestParam Map<String, String> request) {
+		ResponseObject response = new ResponseObject<>();		
+		response.setData(productService.getAll(request));
+		response.setMessage("Successful!");
+		response.setSuccess(true);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
 	@GetMapping("/{slug}")
 	public ResponseEntity<Product> findBySlug(@PathVariable String slug){
 		Product product = productService.findBySlug(slug);
@@ -88,19 +98,27 @@ public class ProductController {
 	}
 	
 	
-//	@PostMapping("")
-//	public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO product) throws URISyntaxException {
-//		ProductDTO newProduct = productService.saveProduct(product);
-//		return ResponseEntity.created(new URI("/products/"+newProduct.getId())).body(newProduct);
-//	}
-	@PutMapping("")
-	public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product){
-		Product newProduct = productService.saveProduct(product);
-		return ResponseEntity.ok().body(newProduct);
+	@PostMapping("")
+	public ResponseEntity createProduct(@Valid @RequestBody List<ProductDTO> products){
+		return ResponseEntity.ok(productService.saveProduct(products));
 	}
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Product> deleteProduct(@PathVariable Integer productId){
-		productService.deleteProduct(productId);
-		return ResponseEntity.ok().build();
+	@PutMapping("")
+	public ResponseEntity put(@Valid @RequestBody List<ProductDTO> products) {
+		return ResponseEntity.ok(productService.saveProduct(products));
+	}
+	@DeleteMapping("")
+	public ResponseEntity deleteProduct(@Valid @RequestBody List<Integer> ids){
+		ResponseObject response = new ResponseObject<>();
+		try {
+			productService.deleteProduct(ids);
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		} catch (Exception ex) {
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);	
+		}
+		
 	}
 }

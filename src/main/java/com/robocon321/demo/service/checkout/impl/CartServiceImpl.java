@@ -1,6 +1,7 @@
 package com.robocon321.demo.service.checkout.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,11 +16,15 @@ import org.springframework.stereotype.Service;
 import com.robocon321.demo.domain.FilterCriteria;
 import com.robocon321.demo.dto.checkout.CartDTO;
 import com.robocon321.demo.dto.checkout.CartItemDTO;
+//import com.robocon321.demo.dto.checkout.CheckoutDTO;
+import com.robocon321.demo.dto.checkout.PaymentMethodDTO;
+import com.robocon321.demo.dto.common.ContactDTO;
 import com.robocon321.demo.dto.post.product.ProductDTO;
 //import com.robocon321.demo.dto.review.CartDTO;
 import com.robocon321.demo.dto.user.UserDTO;
 import com.robocon321.demo.entity.checkout.Cart;
 import com.robocon321.demo.entity.checkout.CartItem;
+import com.robocon321.demo.entity.checkout.Checkout;
 import com.robocon321.demo.entity.post.product.Product;
 import com.robocon321.demo.entity.user.User;
 //import com.robocon321.demo.entity.review.Cart;
@@ -98,17 +103,7 @@ public class CartServiceImpl implements CartService{
 			UserDTO userDTO = new UserDTO();
 			BeanUtils.copyProperties(cart.getModifiedUser(), userDTO);
 			dto.setModifiedUser(userDTO);
-			
-//			Cart parent = cart.getParent();
-//			if(parent != null) {
-//				CartDTO parentDTO = new CartDTO();
-//				BeanUtils.copyProperties(comment.getParent(), parentDTO);
-//				dto.setParent(parentDTO);
-//				
-//				UserDTO userParentDTO = new UserDTO();
-//				BeanUtils.copyProperties(comment.getModifiedUser(), userParentDTO);				
-//				parentDTO.setModifiedUser(userParentDTO);
-//			}			
+						
 			
 			cartDTOs.add(dto);
 		}
@@ -117,25 +112,22 @@ public class CartServiceImpl implements CartService{
 		return cartDTOs;
 	}
 	
-//	private List<CartItemDTO> convertListEntityToDTO(List<CartItem> cartitems){
-//		return cartitems.stream().map(cartItem -> convertEntityToDTO(cartItem)).collect(Collectors.toList());
-//	}
+	private List<CartDTO> convertListEntityToDTO(List<Cart> carts){
+		return carts.stream().map(cart -> convertEntityToDTO(cart)).collect(Collectors.toList());
+	}
 //	
-//	private CartItemDTO convertEntityToDTO(CartItem cartItem) {
-//		CartItemDTO cartItemDTO = new CartItemDTO();
-//		
-//		BeanUtils.copyProperties(cartItem, cartItemDTO);
-//		
-//		CartDTO cartDTO = new CartDTO();
-//		BeanUtils.copyProperties(cartItem.getCart(), cartDTO);
-//		cartItemDTO.setCart(cartDTO);
-//		
-//		ProductDTO productDTO = new ProductDTO();
-//		BeanUtils.copyProperties(cartItem.getProduct(), productDTO);
-//		cartItemDTO.setProduct(productDTO);
-//		
-//		return cartItemDTO;
-//	}
+	private CartDTO convertEntityToDTO(Cart cart) {
+		CartDTO cartDTO = new CartDTO();
+    	BeanUtils.copyProperties(cart, cartDTO);
+    	
+    	UserDTO userDTO = new UserDTO();
+    	BeanUtils.copyProperties(cartDTO.getModifiedUser(), userDTO);
+    	cartDTO.setModifiedUser(userDTO);
+    	
+    	cartDTO.setModifiedTime(cart.getModifiedTime());
+    	
+    	return cartDTO;
+	}
 
 	@Override
 	public List<Cart> findByModUserid(Integer userId) {
@@ -151,8 +143,30 @@ public class CartServiceImpl implements CartService{
 	}
 
 	@Override
-	public Cart saveCart(Cart cart) {
-		return cartRepository.save(cart);
+	public List<CartDTO> saveCart(List<CartDTO> cartDTOs) {
+		List<Cart> carts = new ArrayList<Cart>();
+		try {
+			cartDTOs.stream().forEach(cartDTO->{
+				Cart cart = new Cart();
+				BeanUtils.copyProperties(cartDTO, cart);
+				
+				User user = new User();
+				BeanUtils.copyProperties(cartDTO.getModifiedUser(), user);
+				cart.setModifiedUser(user);
+				
+				cart.setStatus(1);
+				cart.setModifiedTime(new Date());
+				carts.add(cart);
+				
+			});
+			cartRepository.saveAll(carts);
+			return convertListEntityToDTO(carts);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+		
+
 	}
 
 	@Override
@@ -168,6 +182,16 @@ public class CartServiceImpl implements CartService{
 	@Override
 	public List<Cart> getLastCart(Integer userId) {
 		// TODO Auto-generated method stub
+		if(cartRepository.findByModifiedUserOrderByModifiedTimeDesc(userRepository.findById(userId).get())==null) {
+			Cart cart = new Cart();
+			cart.setModifiedUser(userRepository.findById(userId).get());
+			cart.setStatus(1);
+			cart.setModifiedTime(new Date());
+			cartRepository.save(cart);
+			return cartRepository.findByModifiedUserOrderByModifiedTimeDesc(userRepository.findById(userId).get());
+		}
+			
+			
 		return cartRepository.findByModifiedUserOrderByModifiedTimeDesc(userRepository.findById(userId).get());
 	}
 }

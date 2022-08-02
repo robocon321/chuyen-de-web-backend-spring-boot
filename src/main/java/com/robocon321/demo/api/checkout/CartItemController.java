@@ -3,18 +3,22 @@ package com.robocon321.demo.api.checkout;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+//import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
@@ -58,7 +62,7 @@ public class CartItemController {
 		System.out.println("list id cart=============="+ids);
 		ResponseObject response = new ResponseObject<>();
 		try {
-			List<CartItemDTO> cartItemsDTO = cartItemService.add(ids);
+			List<CartItemDTO> cartItemsDTO = cartItemService.save(ids);
 			response.setData(cartItemsDTO);
 			response.setMessage("Successful");
 			response.setSuccess(true);
@@ -70,5 +74,35 @@ public class CartItemController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
 	}
-
+	@PutMapping("/{id}")
+	public ResponseEntity put(@Valid @RequestBody CartItemDTO cartItemDTO,@PathVariable Integer id) {
+		System.out.println(id);
+		ResponseObject response = new ResponseObject<>();
+		try {
+//			CartItemDTO cartItemsDTO = cartItemService.update(cartItemDTOs);
+			response.setData(cartItemService.update(cartItemDTO));
+			response.setMessage("Successful");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+		}
+	}
+	@DeleteMapping("")
+	public ResponseEntity delete(@RequestBody List<Integer> ids) {
+		ResponseObject response = new ResponseObject<>();
+		try {
+			cartItemService.delete(ids);
+			response.setMessage("Successful!");
+			response.setSuccess(true);
+			return ResponseEntity.ok(response);
+		} catch(Exception ex) {
+			response.setMessage(ex.getMessage());
+			response.setSuccess(false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);			
+		}
+	}
 }

@@ -189,7 +189,7 @@ public class PostServiceImpl implements PostService {
     		TaxomonyDTO taxomonyDTO = new TaxomonyDTO();
     		BeanUtils.copyProperties(taxomony, taxomonyDTO);
     		return taxomonyDTO;
-    	}).toList();
+    	}).collect(Collectors.toList());
     	
     	postDTO.setTaxomonies(taxomonyDTOs);
     		
