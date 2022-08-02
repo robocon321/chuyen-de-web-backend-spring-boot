@@ -53,7 +53,7 @@ public class Cart {
 	@JsonIgnore
 	private List<CartItem> cartItems;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "cart")
-	@JsonIgnore
-	private Checkout checkout;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "cart")
+//	@JsonIgnore
+//	private Checkout checkout;
 }
