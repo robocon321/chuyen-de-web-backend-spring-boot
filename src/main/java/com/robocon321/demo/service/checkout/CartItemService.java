@@ -9,7 +9,8 @@ import com.robocon321.demo.entity.checkout.Cart;
 public interface CartItemService {
 	public List<CartItemDTO> getAll(Map<String, String> request);
 	public void delete(List<Integer> ids);
-	public List<CartItemDTO> add(List<Integer> ids);
+	public List<CartItemDTO> save(List<Integer> ids);
 	public List<CartItemDTO> getByCartId(Integer cartId);
+	public CartItemDTO update(CartItemDTO cartItemDTO);
 	
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.robocon321.demo.domain.ResponseObject;
+import com.robocon321.demo.dto.checkout.CartDTO;
 import com.robocon321.demo.entity.checkout.Cart;
 import com.robocon321.demo.service.checkout.CartService;
 
@@ -52,9 +53,9 @@ public class CartController {
 		return ResponseEntity.ok(response);
 	}
 	@PostMapping("")
-	public ResponseEntity<Cart> createCart(@Valid @RequestBody Cart cart) throws URISyntaxException{
-		Cart newCart = cartService.saveCart(cart);
-		return ResponseEntity.created(new URI("/carts/"+newCart.getId())).body(newCart);
+	public ResponseEntity createCart(@RequestBody @Valid  List<CartDTO> cart) throws URISyntaxException{
+//		Cart newCart = cartService.saveCart(cart);
+		return ResponseEntity.ok(cartService.saveCart(cart));
 		
 	}
 }

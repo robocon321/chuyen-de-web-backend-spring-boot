@@ -1,6 +1,7 @@
 package com.robocon321.demo.service.user.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class RoleServiceImpl implements RoleService {
 			RoleDTO roleDTO = new RoleDTO();
 			BeanUtils.copyProperties(role, roleDTO);
 			return roleDTO;
-		}).toList();
+		}).collect(Collectors.toList());
 	}
 
 }
