@@ -138,10 +138,11 @@ public class UserServiceImpl implements UserService {
 		
 		
 		// set userAccount
-		
-		UserAccountDTO userAccountDTO = new UserAccountDTO();
-		BeanUtils.copyProperties(user.getUserAccount(), userAccountDTO);
-		userDTO.setUserAccount(userAccountDTO);
+		if(user.getUserAccount() != null) {
+			UserAccountDTO userAccountDTO = new UserAccountDTO();
+			BeanUtils.copyProperties(user.getUserAccount(), userAccountDTO);
+			userDTO.setUserAccount(userAccountDTO);			
+		}
 		
 		// set roles
 		
@@ -152,7 +153,7 @@ public class UserServiceImpl implements UserService {
 		}).collect(Collectors.toList());
 		
 		userDTO.setRoles(roleDTOs);
-		userDTO.getUserAccount().setPassword("");
+//		userDTO.getUserAccount().setPassword("");
 		
 		return userDTO;
 	}
@@ -224,8 +225,10 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userDTOs.stream().map(userDTO -> {
 			if(userDTO.getId() == null) throw new RuntimeException("Your update user invalid");
 			// check exists username
-			if (userAccountRepository.existsByUsernameAndUser_IdNot(userDTO.getUserAccount().getUsername(), userDTO.getId()))
-				throw new RuntimeException("Your username exists");
+			if(userDTO.getUserAccount() != null) {
+				if (userAccountRepository.existsByUsernameAndUser_IdNot(userDTO.getUserAccount().getUsername(), userDTO.getId()))
+					throw new RuntimeException("Your username exists");				
+			}
 
 			User user = new User();
 			BeanUtils.copyProperties(userDTO, user);
@@ -239,13 +242,15 @@ public class UserServiceImpl implements UserService {
 			}).collect(Collectors.toList());
 			user.setRoles(roles);
 
-			// set user account
-			UserAccount userAccount = new UserAccount();
-			BeanUtils.copyProperties(userDTO.getUserAccount(), userAccount);
-			user.setUserAccount(userAccount);
-			user.setModifiedUser(userMod);
-			userAccount.setUser(user);
+			if(userDTO.getUserAccount() != null) {
+				// set user account
+				UserAccount userAccount = new UserAccount();
+				BeanUtils.copyProperties(userDTO.getUserAccount(), userAccount);
+				user.setUserAccount(userAccount);
+				userAccount.setUser(user);				
+			}
 
+			user.setModifiedUser(userMod);
 			return user;
 		}).collect(Collectors.toList());
 
